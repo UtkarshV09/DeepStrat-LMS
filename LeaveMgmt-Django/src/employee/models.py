@@ -183,8 +183,7 @@ class Employee(models.Model):
     def save(self,*args,**kwargs):
         '''
         overriding the save method - for every instance that calls the save method 
-        perform this action on its employee_id
-        added : March, 03 2019 - 11:08 PM
+        
 
         '''
         get_id = self.employeeid #grab employee_id number from submitted form field
