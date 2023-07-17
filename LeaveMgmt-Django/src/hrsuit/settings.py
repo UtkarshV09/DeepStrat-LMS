@@ -18,9 +18,9 @@ ALLOWED_HOSTS = []
 
 
 # Email Settings
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'edward.mike.anaryo@gmail.com' #test
-EMAIL_HOST_PASSWORD = 'yencommerce'#test
+EMAIL_HOST = ''
+EMAIL_HOST_USER = '' #test
+EMAIL_HOST_PASSWORD = ''#test
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
