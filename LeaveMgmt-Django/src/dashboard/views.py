@@ -287,7 +287,7 @@ def leaves_view(request,id):
 
 	leave = get_object_or_404(Leave, id = id)
 	print(leave.user)
-	employee = Employee.objects.filter(user = leave.user)[0]
+	employee = Employee.objects.filter(user = leave.user).first()
 	print(employee)
 	return render(request,'dashboard/leave_detail_view.html',{'leave':leave,'employee':employee,'title':'{0}-{1} leave'.format(leave.user.username,leave.status)})
 
@@ -304,7 +304,7 @@ def approve_leave(request,id):
 		return redirect('/')
 	leave = get_object_or_404(Leave, id = id)
 	user = leave.user
-	employee = Employee.objects.filter(user = user)[0]
+	employee = Employee.objects.filter(user = user).first()
 	leave.approve_leave
 
 	messages.error(request,'Leave successfully approved for {0}'.format(employee.get_full_name),extra_tags = 'alert alert-success alert-dismissible show')
