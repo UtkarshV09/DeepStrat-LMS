@@ -10,7 +10,7 @@ class UserAddForm(UserCreationForm):
 	Extending UserCreationForm - with email
 
 	'''
-	email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'eg.rajparmar@.com'}))
+	email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'eg.com'}))
 
 	class Meta:
 		model = User
