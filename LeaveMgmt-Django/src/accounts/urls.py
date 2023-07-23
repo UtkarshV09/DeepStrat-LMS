@@ -7,10 +7,10 @@ app_name = "accounts"
 
 urlpatterns = [
     path("login/", views.login_view, name="login"),
-    path('signin', views.sign_in, name='signin'),
+    path("signin", views.sign_in, name="signin"),
     path("logout/", views.logout_view, name="logout"),
-    path('signout', views.sign_out, name='signout'),
-    path('callback', views.callback, name='callback'),
+    path("signout", views.sign_out, name="signout"),
+    path("callback", views.callback, name="callback"),
     path("create-user/", views.register_user_view, name="register"),
     path("user/change-password/", views.changepassword, name="changepassword"),
     # path('user/profile/view/',views.user_profile_view,name='userprofile'),

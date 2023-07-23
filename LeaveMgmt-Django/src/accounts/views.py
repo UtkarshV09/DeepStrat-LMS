@@ -12,8 +12,6 @@ from auth_helper import *
 from graph_helper import *
 
 
-
-
 def changepassword(request: HttpRequest) -> HttpResponseRedirect:
     if not request.user.is_authenticated:
         return redirect("/")
@@ -172,21 +170,23 @@ def users_blocked_list(request: HttpRequest) -> HttpResponse:
     )
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """
+""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """"""
 """ AZURE SSO
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """"""
 
 
 def initialize_context(request):
     context = {}
-    error = request.session.pop('flash_error', None)
+    error = request.session.pop("flash_error", None)
     if error is not None:
-        context['errors'] = []
-        context['errors'].append(error)  # Appending the error to the list only when it's not None
-    
+        context["errors"] = []
+        context["errors"].append(
+            error
+        )  # Appending the error to the list only when it's not None
+
     # The user key and the default value should be separated by a comma
-    context['user'] = request.session.get('user', {'is_authenticated': False})
+    context["user"] = request.session.get("user", {"is_authenticated": False})
     return context
 
 
@@ -195,37 +195,45 @@ def sign_in(request):
     flow = get_sign_in_flow()
     # Save the expected flow so we can use it in the callback
     try:
-        request.session['auth_flow'] = flow
+        request.session["auth_flow"] = flow
     except Exception as e:
-        print(e)    # Redirect to the Azure sign-in page
-    return HttpResponseRedirect(flow['auth_uri'])
+        print(e)  # Redirect to the Azure sign-in page
+    return HttpResponseRedirect(flow["auth_uri"])
+
 
 def sign_out(request):
     # Clear out the user and token
     remove_user_and_token(request)
-    return HttpResponseRedirect(reverse('home'))
+    return HttpResponseRedirect(reverse("home"))
 
 
 def get_or_create_user(user_id, request, name=None):
-  user = User.objects.filter(username=user_id).first()
+    user = User.objects.filter(username=user_id).first()
 
-  if not user:
-    user = User(username=user_id, email=user_id, first_name=name)
-    user.save()
+    if not user:
+        user = User(username=user_id, email=user_id, first_name=name)
+        user.save()
 
-  request.user = user
-  request.session['user_id'] = user_id
-  login(request, user)
-  return user
+    request.user = user
+    request.session["user_id"] = user_id
+    login(request, user)
+    return user
+
 
 def callback(request):
     # Make the token request
-    result = get_token_from_code(request)    #Get the user's profile from graph_helper.py script
-    print (result)
-    user = get_user(result['access_token'])     # Store user from auth_helper.py script
+    result = get_token_from_code(
+        request
+    )  # Get the user's profile from graph_helper.py script
+    print(result)
+    user = get_user(result["access_token"])  # Store user from auth_helper.py script
     store_user(request, user)
 
     ## Get User Object
-    get_or_create_user(user['mail'] if (user['mail'] != None) else user['userPrincipalName'], request, name=user['displayName'])
+    get_or_create_user(
+        user["mail"] if (user["mail"] != None) else user["userPrincipalName"],
+        request,
+        name=user["displayName"],
+    )
     print(request.user)
     return redirect("dashboard:dashboard")

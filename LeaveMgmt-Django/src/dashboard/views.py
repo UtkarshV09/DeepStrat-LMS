@@ -96,7 +96,6 @@ def dashboard_employees_create(request: HttpRequest) -> HttpResponse:
             instance.lastname = request.POST.get("lastname")
             instance.othername = request.POST.get("othername")
             instance.birthday = request.POST.get("birthday")
-            
 
             role = request.POST.get("role")
             role_instance = Role.objects.get(id=role)

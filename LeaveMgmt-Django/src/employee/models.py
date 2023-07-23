@@ -124,7 +124,7 @@ class Employee(models.Model):
         null=True,
     )
     employeeid = models.CharField(
-    _("Employee ID Number"), max_length=10, null=True, blank=True
+        _("Employee ID Number"), max_length=10, null=True, blank=True
     )
 
     dateissued = models.DateField(
