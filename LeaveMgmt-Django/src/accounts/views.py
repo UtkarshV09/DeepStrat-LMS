@@ -1,5 +1,5 @@
-from django.shortcuts import render,redirect,get_object_or_404
-from django.http import HttpResponse,HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -7,90 +7,106 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from employee.models import *
-from .forms import UserLogin,UserAddForm
+from .forms import UserLogin, UserAddForm
+from auth_helper import *
+from graph_helper import *
 
 
 
-def changepassword(request):
-	if not request.user.is_authenticated:
-		return redirect('/')
-	'''
+
+def changepassword(request: HttpRequest) -> HttpResponseRedirect:
+    if not request.user.is_authenticated:
+        return redirect("/")
+    """
 	Please work on me -> success & error messages & style templates
-	'''
-	if request.method == 'POST':
-		form = PasswordChangeForm(request.user, request.POST)
-		if form.is_valid():
-			user = form.save(commit=True)
-			update_session_auth_hash(request,user)
+	"""
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save(commit=True)
+            update_session_auth_hash(request, user)
 
-			messages.success(request,'Password changed successfully',extra_tags = 'alert alert-success alert-dismissible show' )
-			return redirect('accounts:changepassword')
-		else:
-			messages.error(request,'Error,changing password',extra_tags = 'alert alert-warning alert-dismissible show' )
-			return redirect('accounts:changepassword')
-			
-	form = PasswordChangeForm(request.user)
-	return render(request,'accounts/change_password_form.html',{'form':form})
+            messages.success(
+                request,
+                "Password changed successfully",
+                extra_tags="alert alert-success alert-dismissible show",
+            )
+            return redirect("accounts:changepassword")
+        else:
+            messages.error(
+                request,
+                "Error,changing password",
+                extra_tags="alert alert-warning alert-dismissible show",
+            )
+            return redirect("accounts:changepassword")
 
-
-
-
-def register_user_view(request):
-	# WORK ON (MESSAGES AND UI) & extend with email field
-	if request.method == 'POST':
-		form = UserAddForm(data = request.POST)
-		if form.is_valid():
-			instance = form.save(commit = False)
-			instance.save()
-			username = form.cleaned_data.get("username")
-
-			messages.success(request,'Account created for {0} !!!'.format(username),extra_tags = 'alert alert-success alert-dismissible show' )
-			return redirect('accounts:register')
-		else:
-			messages.error(request,'Username or password is invalid',extra_tags = 'alert alert-warning alert-dismissible show')
-			return redirect('accounts:register')
+    form = PasswordChangeForm(request.user)
+    return render(request, "accounts/change_password_form.html", {"form": form})
 
 
-	form = UserAddForm()
-	dataset = dict()
-	dataset['form'] = form
-	dataset['title'] = 'register users'
-	return render(request,'accounts/register.html',dataset)
+def register_user_view(request: HttpRequest) -> HttpResponse:
+    # WORK ON (MESSAGES AND UI) & extend with email field
+    if request.method == "POST":
+        form = UserAddForm(data=request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            username = form.cleaned_data.get("username")
+
+            messages.success(
+                request,
+                "Account created for {0} !!!".format(username),
+                extra_tags="alert alert-success alert-dismissible show",
+            )
+            return redirect("accounts:register")
+        else:
+            messages.error(
+                request,
+                "Username or password is invalid",
+                extra_tags="alert alert-warning alert-dismissible show",
+            )
+            return redirect("accounts:register")
+
+    form = UserAddForm()
+    dataset = dict()
+    dataset["form"] = form
+    dataset["title"] = "register users"
+    return render(request, "accounts/register.html", dataset)
 
 
+def login_view(request: HttpRequest) -> HttpResponse:
+    """
+    work on me - needs messages and redirects
 
+    """
+    login_user = request.user
+    if request.method == "POST":
+        form = UserLogin(data=request.POST)
+        if form.is_valid():
+            username = request.POST.get("username")
+            password = request.POST.get("password")
 
-def login_view(request):
-	'''
-	work on me - needs messages and redirects
-	
-	'''
-	login_user = request.user
-	if request.method == 'POST':
-		form = UserLogin(data = request.POST)
-		if form.is_valid():
-			username = request.POST.get('username')
-			password = request.POST.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user and user.is_active:
+                login(request, user)
+                if login_user.is_authenticated:
+                    return redirect("dashboard:dashboard")
+            else:
+                messages.error(
+                    request,
+                    "Account is invalid",
+                    extra_tags="alert alert-error alert-dismissible show",
+                )
+                return redirect("accounts:login")
 
-			user = authenticate(request, username = username, password = password)
-			if user and user.is_active:
-				login(request,user)
-				if login_user.is_authenticated:
-					return redirect('dashboard:dashboard')
-			else:
-			    messages.error(request,'Account is invalid',extra_tags = 'alert alert-error alert-dismissible show' )
-			    return redirect('accounts:login')
+        else:
+            return HttpResponse("data not valid")
 
-		else:
-			return HttpResponse('data not valid')
+    dataset = dict()
+    form = UserLogin()
 
-	dataset=dict()
-	form = UserLogin()
-
-	dataset['form'] = form
-	return render(request,'accounts/login.html',dataset)
-
-
+    dataset["form"] = form
+    return render(request, "accounts/login.html", dataset)
 
 
 # def user_profile_view(request):
@@ -100,55 +116,116 @@ def login_view(request):
 # 	user = request.user
 # 	if user.is_authenticated:
 # 		employee = Employee.objects.filter(user = user).first()
-		
+
 
 # 		dataset = dict()
 # 		dataset['employee'] = employee
-	
-		
+
 
 # 		return render(request,'dashboard/employee_detail.html',dataset)
 # 	return HttpResponse("Sorry , not authenticated for this,admin or whoever you are :)")
 
 
+def logout_view(request: HttpRequest) -> HttpResponse:
+    logout(request)
+    return redirect("accounts:login")
 
 
-
-def logout_view(request):
-	logout(request)
-	return redirect('accounts:login')
-
-
-
-def users_list(request):
-	employees = Employee.objects.all()
-	return render(request,'accounts/users_table.html',{'employees':employees,'title':'Users List'})
+def users_list(request: HttpRequest) -> HttpResponse:
+    employees = Employee.objects.all()
+    return render(
+        request,
+        "accounts/users_table.html",
+        {"employees": employees, "title": "Users List"},
+    )
 
 
-def users_unblock(request,id):
-	user = get_object_or_404(User,id = id)
-	emp = Employee.objects.filter(user = user).first()
-	emp.is_blocked = False
-	emp.save()
-	user.is_active = True
-	user.save()
+def users_unblock(request, id):
+    user = get_object_or_404(User, id=id)
+    emp = Employee.objects.filter(user=user).first()
+    emp.is_blocked = False
+    emp.save()
+    user.is_active = True
+    user.save()
 
-	return redirect('accounts:users')
-
-
-def users_block(request,id):
-	user = get_object_or_404(User,id = id)
-	emp = Employee.objects.filter(user = user).first()
-	emp.is_blocked = True
-	emp.save()
-	
-	user.is_active = False
-	user.save()
-	
-	return redirect('accounts:users')
+    return redirect("accounts:users")
 
 
+def users_block(request, id):
+    user = get_object_or_404(User, id=id)
+    emp = Employee.objects.filter(user=user).first()
+    emp.is_blocked = True
+    emp.save()
 
-def users_blocked_list(request):
-	blocked_employees = Employee.objects.all_blocked_employees()
-	return render(request,'accounts/all_deleted_users.html',{'employees':blocked_employees,'title':'blocked users list'})
+    user.is_active = False
+    user.save()
+
+    return redirect("accounts:users")
+
+
+def users_blocked_list(request: HttpRequest) -> HttpResponse:
+    blocked_employees = Employee.objects.all_blocked_employees()
+    return render(
+        request,
+        "accounts/all_deleted_users.html",
+        {"employees": blocked_employees, "title": "blocked users list"},
+    )
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""" AZURE SSO
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+def initialize_context(request):
+    context = {}
+    error = request.session.pop('flash_error', None)
+    if error is not None:
+        context['errors'] = []
+        context['errors'].append(error)  # Appending the error to the list only when it's not None
+    
+    # The user key and the default value should be separated by a comma
+    context['user'] = request.session.get('user', {'is_authenticated': False})
+    return context
+
+
+def sign_in(request):
+    # Get the sign-in flow
+    flow = get_sign_in_flow()
+    # Save the expected flow so we can use it in the callback
+    try:
+        request.session['auth_flow'] = flow
+    except Exception as e:
+        print(e)    # Redirect to the Azure sign-in page
+    return HttpResponseRedirect(flow['auth_uri'])
+
+def sign_out(request):
+    # Clear out the user and token
+    remove_user_and_token(request)
+    return HttpResponseRedirect(reverse('home'))
+
+
+def get_or_create_user(user_id, request, name=None):
+  user = User.objects.filter(username=user_id).first()
+
+  if not user:
+    user = User(username=user_id, email=user_id, first_name=name)
+    user.save()
+
+  request.user = user
+  request.session['user_id'] = user_id
+  login(request, user)
+  return user
+
+def callback(request):
+    # Make the token request
+    result = get_token_from_code(request)    #Get the user's profile from graph_helper.py script
+    print (result)
+    user = get_user(result['access_token'])     # Store user from auth_helper.py script
+    store_user(request, user)
+
+    ## Get User Object
+    get_or_create_user(user['mail'] if (user['mail'] != None) else user['userPrincipalName'], request, name=user['displayName'])
+    print(request.user)
+    return redirect("dashboard:dashboard")
