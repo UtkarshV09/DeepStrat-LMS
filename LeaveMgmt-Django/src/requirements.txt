@@ -15,11 +15,11 @@ cffi
 chardet
 clint
 constantly
+crispy_bootstrap4
 cryptography
 cssselect2
 defusedxml
 dj-database-url
-crispy_bootstrap4
 Django
 django-admin-honeypot
 django-allauth

@@ -105,12 +105,12 @@ span{
   {% endblock %}
 
 
-  
+
 
  {% block content %}
         <section class="content">
             <section class="container-fluid">
-           
+
                 <section class="form-wrapper">
                     <section class="row">
                         <section class="col col-lg-8 col-md-12  col-sm-12">
@@ -155,16 +155,16 @@ span{
                                              <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="" role="tab" aria-controls=""><span>Status</span> <div><b>{{ leave.status}}</b></div>
                                              </a>
 
-                                       
+
                                       </div>
 
                         </section>
                     </section>
 
 
-                             
+
                                   <span style="font-size: 13px;padding-left: 1rem;" class="pull-left">Created <b>{{ leave.created }}</b></span>
-                              
+
 
               {% if request.user.is_superuser and request.user.is_staff %}
 
@@ -179,7 +179,7 @@ span{
                           </a>
                           {% endif %}
                           <a href="{% url 'dashboard:userleavecancel' leave.id %}" class="btn btn-info" style="background-color:rgb(0, 142, 185); color: white;" name='cancel'>Cancel</a>
-                          <a href="{% url 'dashboard:reject' leave.id %}" class="btn btn-danger" style="background-color:rgb(185, 0, 0); color: white;" name='reject'>Reject</a>  
+                          <a href="{% url 'dashboard:reject' leave.id %}" class="btn btn-danger" style="background-color:rgb(185, 0, 0); color: white;" name='reject'>Reject</a>
                         </div>
                       </section>
                     </section>
@@ -188,7 +188,7 @@ span{
 
                 </section>
 
-            </section> <!-- /container --> 
+            </section> <!-- /container -->
         </section>
  {% endblock %}
 

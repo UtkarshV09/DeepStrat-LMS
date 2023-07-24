@@ -10,7 +10,7 @@
  {% endblock %}
 
 
- 
+
   {% block stylesheet %}
   	.rounded-circle-image{
   	border-radius: 50% !important;
@@ -145,7 +145,7 @@ span{
                     <img src="/media/default.png" class="img-fluid rounded-circle-image" />
                     {% endif %}
         						  <section class="text-centered" style="margin-top: 3px;">
-        						    
+
             							<ul class="list-group">
               					  		<li class="list-group-item"><span>Fullname</span> <div>{{ employee.get_full_name }}</div></li>
               					  		<li class="list-group-item"><span>Nationality</span><div> {{ employee.nationality}}</div></li>
@@ -166,7 +166,7 @@ span{
                               <div>
                                 <span style="font-style: italic;">updated - {{employee.updated|naturaltime}}</span>
                               </div>
-                              
+
             							</ul>
         						  </section>
 						        </section><!-- /profile-wrappper -->
@@ -183,7 +183,7 @@ span{
                           <div class="panel-heading" role="tab" id="headingOne">
                             <h4 class="panel-title">
                               <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                PERSONAL INFORMATIONS 
+                                PERSONAL INFORMATIONS
                               </a>
                             </h4>
                           </div>
@@ -192,9 +192,9 @@ span{
                               <div class="container-fluid">
                                 <div class="row">
                                   <div class="col col-lg-6">
-                                       
+
                                         {% if employee %}
-                                          
+
                                           <div class="list-group" id="list-tab" role="tablist">
                                             <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="" role="tab" aria-controls=""><span>Salutation</span> <div>{{ employee.title }}</div>
                                             </a>
@@ -225,7 +225,7 @@ span{
                                             <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="" role="tab" aria-controls=""><span>Email </span><div>{{ employee.email }} </div>
                                             </a>
                                             {% endif %}
-                                         
+
 
 
                                             {% if employee.tel %}
@@ -320,7 +320,7 @@ span{
                                            <div>
                                             <span>last update - {{employee.updated|naturaltime }}</span>
                                           </div>
-                                        
+
                                   </div>
                                 </div>
                               </div>
@@ -334,7 +334,7 @@ span{
                           <div class="panel-heading" role="tab" id="headingTwo">
                             <h4 class="panel-title">
                               <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                FAMILY INFORMATIONS 
+                                FAMILY INFORMATIONS
                               </a>
                             </h4>
                           </div>
@@ -343,11 +343,11 @@ span{
                                 <section class="container-fluid">
 
                                    <div class="row">
-                                        
-                                        {% if family %}
-                                          
 
-                                          
+                                        {% if family %}
+
+
+
                                           <div class="list-group" id="list-tab" role="tablist">
                                             <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="" role="tab" aria-controls=""><span>Status</span> <div>{{ family.status }}</div>
                                             </a>
@@ -378,7 +378,7 @@ span{
                                             <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="" role="tab" aria-controls=""><span>Next of Kin </span><div>{{ family.nextofkin }} </div>
                                             </a>
                                             {% endif %}
-                                         
+
 
 
                                             {% if family.contact %}
@@ -409,7 +409,7 @@ span{
                                             {% if request.user.is_superuser %}
                                             <span><a href="{% url 'dashboard:familyedit' family.id %}">Edit</a></span>
                                             {% endif %}
-                                          
+
                                           </div>
 
                                            <div>
@@ -449,7 +449,7 @@ span{
                                 <section class="container-fluid">
 
                                    <div class="row">
-                                        
+
                                         {% if emergency %}
                                           <div class="list-group" id="list-tab" role="tablist">
                                             <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="" role="tab" aria-controls=""><span>Fullname</span> <div>{{ emergency.fullname }}</div></a>
@@ -468,7 +468,7 @@ span{
                                           </div>
 
                                         {% else %}
-                                       
+
                                         <h4>
                                           {% if request.user.is_superuser %}No Information found,to add click <a href="{% url 'dashboard:emergencycreate' %}">here</a>
                                           {% else%}
@@ -483,7 +483,7 @@ span{
                                 </section>
 
                             </div>
-                              
+
                           </div>
                         </div>
                         <!-- /EMERGENCY -->
@@ -503,7 +503,7 @@ span{
                               <section class="container-fluid">
 
                                    <div class="row">
-                                        
+
                                         {% if bank %}
                                           <div class="list-group" id="list-tab" role="tablist">
                                             <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="" role="tab" aria-controls=""><span>Bank name</span> <div>{{ bank.name }}</div></a>
@@ -547,7 +547,7 @@ span{
                 		</section>
                  	</section><!-- /Row -->
 
-            </section> <!-- /container --> 
+            </section> <!-- /container -->
 
 
         </section><!-- /content -->

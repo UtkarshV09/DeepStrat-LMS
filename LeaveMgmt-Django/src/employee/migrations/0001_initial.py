@@ -14,182 +14,182 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Department",
+            name='Department',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
-                ("name", models.CharField(max_length=125)),
+                ('name', models.CharField(max_length=125)),
                 (
-                    "description",
+                    'description',
                     models.CharField(blank=True, max_length=125, null=True),
                 ),
                 (
-                    "created",
-                    models.DateTimeField(auto_now_add=True, verbose_name="Created"),
+                    'created',
+                    models.DateTimeField(auto_now_add=True, verbose_name='Created'),
                 ),
                 (
-                    "updated",
-                    models.DateTimeField(auto_now=True, verbose_name="Updated"),
+                    'updated',
+                    models.DateTimeField(auto_now=True, verbose_name='Updated'),
                 ),
             ],
             options={
-                "verbose_name": "Department",
-                "verbose_name_plural": "Departments",
-                "ordering": ["name", "created"],
+                'verbose_name': 'Department',
+                'verbose_name_plural': 'Departments',
+                'ordering': ['name', 'created'],
             },
         ),
         migrations.CreateModel(
-            name="Role",
+            name='Role',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
-                ("name", models.CharField(max_length=125)),
+                ('name', models.CharField(max_length=125)),
                 (
-                    "description",
+                    'description',
                     models.CharField(blank=True, max_length=125, null=True),
                 ),
                 (
-                    "created",
-                    models.DateTimeField(auto_now_add=True, verbose_name="Created"),
+                    'created',
+                    models.DateTimeField(auto_now_add=True, verbose_name='Created'),
                 ),
                 (
-                    "updated",
-                    models.DateTimeField(auto_now=True, verbose_name="Updated"),
+                    'updated',
+                    models.DateTimeField(auto_now=True, verbose_name='Updated'),
                 ),
             ],
             options={
-                "verbose_name": "Role",
-                "verbose_name_plural": "Roles",
-                "ordering": ["name", "created"],
+                'verbose_name': 'Role',
+                'verbose_name_plural': 'Roles',
+                'ordering': ['name', 'created'],
             },
         ),
         migrations.CreateModel(
-            name="Employee",
+            name='Employee',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
                 (
-                    "image",
+                    'image',
                     models.FileField(
                         blank=True,
-                        default="default.png",
-                        help_text="upload image size less than 2.0MB",
+                        default='default.png',
+                        help_text='upload image size less than 2.0MB',
                         null=True,
-                        upload_to="profiles",
-                        verbose_name="Profile Image",
+                        upload_to='profiles',
+                        verbose_name='Profile Image',
                     ),
                 ),
                 (
-                    "firstname",
-                    models.CharField(max_length=125, verbose_name="Firstname"),
+                    'firstname',
+                    models.CharField(max_length=125, verbose_name='Firstname'),
                 ),
-                ("lastname", models.CharField(max_length=125, verbose_name="Lastname")),
+                ('lastname', models.CharField(max_length=125, verbose_name='Lastname')),
                 (
-                    "othername",
+                    'othername',
                     models.CharField(
                         blank=True,
                         max_length=125,
                         null=True,
-                        verbose_name="Othername (optional)",
+                        verbose_name='Othername (optional)',
                     ),
                 ),
-                ("birthday", models.DateField(verbose_name="Birthday")),
+                ('birthday', models.DateField(verbose_name='Birthday')),
                 (
-                    "startdate",
+                    'startdate',
                     models.DateField(
-                        help_text="date of employement",
+                        help_text='date of employement',
                         null=True,
-                        verbose_name="Employement Date",
+                        verbose_name='Employement Date',
                     ),
                 ),
                 (
-                    "employeetype",
+                    'employeetype',
                     models.CharField(
                         choices=[
-                            ("Full-Time", "Full-Time"),
-                            ("Part-Time", "Part-Time"),
-                            ("Contract", "Contract"),
-                            ("Intern", "Intern"),
+                            ('Full-Time', 'Full-Time'),
+                            ('Part-Time', 'Part-Time'),
+                            ('Contract', 'Contract'),
+                            ('Intern', 'Intern'),
                         ],
-                        default="Full-Time",
+                        default='Full-Time',
                         max_length=15,
                         null=True,
-                        verbose_name="Employee Type",
+                        verbose_name='Employee Type',
                     ),
                 ),
                 (
-                    "employeeid",
+                    'employeeid',
                     models.CharField(
                         blank=True,
                         max_length=10,
                         null=True,
-                        verbose_name="Employee ID Number",
+                        verbose_name='Employee ID Number',
                     ),
                 ),
                 (
-                    "dateissued",
+                    'dateissued',
                     models.DateField(
-                        help_text="date staff id was issued",
+                        help_text='date staff id was issued',
                         null=True,
-                        verbose_name="Date Issued",
+                        verbose_name='Date Issued',
                         blank=True,
                     ),
                 ),
                 (
-                    "created",
+                    'created',
                     models.DateTimeField(
-                        auto_now_add=True, null=True, verbose_name="Created"
+                        auto_now_add=True, null=True, verbose_name='Created'
                     ),
                 ),
                 (
-                    "updated",
+                    'updated',
                     models.DateTimeField(
-                        auto_now=True, null=True, verbose_name="Updated"
+                        auto_now=True, null=True, verbose_name='Updated'
                     ),
                 ),
                 (
-                    "department",
+                    'department',
                     models.ForeignKey(
                         default=None,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        to="employee.department",
-                        verbose_name="Department",
+                        to='employee.department',
+                        verbose_name='Department',
                     ),
                 ),
                 (
-                    "role",
+                    'role',
                     models.ForeignKey(
                         default=None,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        to="employee.role",
-                        verbose_name="Role",
+                        to='employee.role',
+                        verbose_name='Role',
                     ),
                 ),
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         default=1,
                         on_delete=django.db.models.deletion.CASCADE,
@@ -198,9 +198,9 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "verbose_name": "Employee",
-                "verbose_name_plural": "Employees",
-                "ordering": ["-created"],
+                'verbose_name': 'Employee',
+                'verbose_name_plural': 'Employees',
+                'ordering': ['-created'],
             },
         ),
     ]

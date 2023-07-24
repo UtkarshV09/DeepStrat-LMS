@@ -11,7 +11,7 @@
      line-height:160px;
      text-align:center;
      position:relative;
-     
+
      font-size:1.9rem;
 
     -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
@@ -24,7 +24,7 @@
 .sec-box a{
  color:#fff;
  text-decoration:none;
-	
+
 }
 
 
@@ -32,7 +32,7 @@
     background: #5a4747;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #d04247, #5a4747);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #d04247, #5a4747); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    
+
 }
 
 
@@ -73,10 +73,10 @@
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:not(.btn):hover, .navbar-default .navbar-nav > .active > a:not(.btn):focus, .navbar-default .navbar-nav > li > a:not(.btn):hover, .navbar-default .navbar-nav > li > a:not(.btn):focus { color: #f44336 }
 
 .navbar-default .navbar-nav > .dropdown > a:hover .caret, .navbar-default .navbar-nav > .dropdown > a:focus .caret { border-bottom-color:  #d04247; border-top-color:  #d04247; }
-     
+
   {% endblock %}
 
-  
+
 
  <!--CONTENTS-->
  {% block content %}
@@ -100,7 +100,7 @@
                             <!-- <span class="count-object" style="color:#41b6d6;"></span>  -->
             			</div>
             		</section>
-            		
+
             		{% else %}
                     <section class="col col-lg-6">
                         <div class="leave-box sec-box">
@@ -110,38 +110,38 @@
                             <!-- <span class="count-object" style="color:#41b6d6;"></span>  -->
                         </div>
                     </section>
-                    
 
-                    
-                    
+
+
+
                     {% endif %}
 
-                    
+
 
                 </section>
-                
-                
-
-                
 
 
-            </section> <!-- /container --> 
-                     
+
+
+
+
+            </section> <!-- /container -->
+
         </section>
 
-        
+
  {% endblock %}
 
- 
+
 
 
 {% block extrajs%}
-    
-    
+
+
 
     $(document).ready(function(){
           var get_login_user = '{{request.user.username}}'
-          
+
           console.log(get_login_user);
 
           demo.initChartist();

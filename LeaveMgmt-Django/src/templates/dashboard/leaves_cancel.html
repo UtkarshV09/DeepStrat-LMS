@@ -20,7 +20,7 @@
     	-webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(	0,0,0,0.2);
     	box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
 	}
-	
+
 
 	h4{
 	margin:2px 0 5px 0 !important;
@@ -65,7 +65,7 @@
      line-height:80px;
      text-align:center;
      position:relative;
-     
+
      font-size:1.9rem;
 
     -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
@@ -79,7 +79,7 @@
 .sec-box a{
  color:#fff;
  text-decoration:none;
-	
+
 }
 
 
@@ -190,7 +190,7 @@ body {
                 			<p>Total cancelled leaves - <span>{{ leave_list_cancel.count }}</span></p>
                 			{% endif %}
                 		</section>
-                	
+
                 		<table class="table">
 							  <thead>
 							    <tr>
@@ -211,15 +211,15 @@ body {
 							      <td>{{ leave.leave_days }}</td>
 							      <td>{{ leave.status }}</td>
 
-							      <td> 
+							      <td>
 							      	<a href="{% url 'dashboard:userleaveview' leave.id %}" style="color: #795548;">
 							      	    <span>View &nbsp;</span>
 							      	</a>
-							      	
+
 							      	{% if not leave.is_approved %}
 							      		<a href="{% url 'dashboard:userleaveuncancel' leave.id %}" style="color:#bd0404;">Undo Cancel</a>
 							      	{% endif %}
-							        
+
 							      </td>
 							    </tr>
 
@@ -228,11 +228,11 @@ body {
 							  </tbody>
 
 						</table>
-			
+
 					</div>
                 	<!-- /TABLE -->
 
-            </section> <!-- /container --> 
+            </section> <!-- /container -->
 
 
         </section>
