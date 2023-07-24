@@ -11,10 +11,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run Super-Linter
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5.2.0
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_PYTHON: true
+          VALIDATE_PYTHON_BLACK: true # For Python formatting
+          VALIDATE_PYTHON_PYLINT: true # For Python best-practices and code quality checks
+          VALIDATE_JAVASCRIPT_ES: true # For JavaScript linting
+          VALIDATE_CSS: true # For CSS linting
+          VALIDATE_HTML: true # For HTML linting
+          VALIDATE_ALL_CODEBASE: false # To disable the other linters
 
       - name: Install dependencies
         run: pip install -r requirements.txt
