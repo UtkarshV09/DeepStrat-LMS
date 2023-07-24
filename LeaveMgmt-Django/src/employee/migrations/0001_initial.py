@@ -153,6 +153,7 @@ class Migration(migrations.Migration):
                         help_text="date staff id was issued",
                         null=True,
                         verbose_name="Date Issued",
+                        blank=True
                     ),
                 ),
                 (

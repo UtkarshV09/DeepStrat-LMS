@@ -2,25 +2,32 @@ import yaml
 import msal
 import os
 import time
+from typing import Any, Dict
+from django.http import HttpRequest
 
 # Load the oauth_settings.yml file located in your app DIR
 stream = open('oauth_settings.yml', 'r')
 settings = yaml.load(stream, yaml.SafeLoader)
 
-def load_cache(request):
+def load_cache(request: HttpRequest) -> msal.SerializableTokenCache:
+  # This function loads the token cache from the session
+  
   # Check for a token cache in the session
   cache = msal.SerializableTokenCache()
   if request.session.get('token_cache'):
     cache.deserialize(request.session['token_cache'])
   return cache
 
-def save_cache(request, cache):
+def save_cache(request: HttpRequest, cache: msal.SerializableTokenCache) -> None:
+  # This function saves the token cache into the session if it has changed
+  
   # If cache has changed, persist back to session
   if cache.has_state_changed:
     request.session['token_cache'] = cache.serialize()
 
-def get_msal_app(cache=None):
-  # Initialize the MSAL confidential client
+def get_msal_app(cache: msal.SerializableTokenCache = None) -> msal.ConfidentialClientApplication:
+  # This function initializes the MSAL confidential client
+  
   auth_app = msal.ConfidentialClientApplication(
     settings['app_id'],
     authority=settings['authority'],
@@ -29,14 +36,14 @@ def get_msal_app(cache=None):
   return auth_app
 
 # Method to generate a sign-in flow
-def get_sign_in_flow():
+def get_sign_in_flow() -> Dict[str, str]:
   auth_app = get_msal_app()
   return auth_app.initiate_auth_code_flow(
     settings['scopes'],
     redirect_uri=settings['redirect'])
 
 # Method to exchange auth code for access token
-def get_token_from_code(request):
+def get_token_from_code(request: HttpRequest) -> Dict[str, Any]:
   cache = load_cache(request)
   auth_app = get_msal_app(cache)
 
@@ -47,8 +54,8 @@ def get_token_from_code(request):
 
   return result
 
-
-def store_user(request, user):
+def store_user(request: HttpRequest, user: Dict[str, Any]) -> None:
+  # This function stores user information into the session
   try:
     request.user = {
       'is_authenticated': True,
@@ -59,7 +66,8 @@ def store_user(request, user):
   except Exception as e:
     print(e)
 
-def get_token(request):
+def get_token(request: HttpRequest) -> str:
+  # This function gets an access token silently
   cache = load_cache(request)
   auth_app = get_msal_app(cache)
 
@@ -72,7 +80,8 @@ def get_token(request):
 
     return result['access_token']
 
-def remove_user_and_token(request):
+def remove_user_and_token(request: HttpRequest) -> None:
+  # This function removes user and token information from the session
   if 'token_cache' in request.session:
     del request.session['token_cache']
 

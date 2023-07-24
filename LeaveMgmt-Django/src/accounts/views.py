@@ -10,13 +10,14 @@ from employee.models import *
 from .forms import UserLogin, UserAddForm
 from auth_helper import *
 from graph_helper import *
+from typing import Dict
 
 
 def changepassword(request: HttpRequest) -> HttpResponseRedirect:
     if not request.user.is_authenticated:
         return redirect("/")
     """
-	Please work on me -> success & error messages & style templates
+	This view allows the authenticated user to change their password.
 	"""
     if request.method == "POST":
         form = PasswordChangeForm(request.user, request.POST)
@@ -43,7 +44,7 @@ def changepassword(request: HttpRequest) -> HttpResponseRedirect:
 
 
 def register_user_view(request: HttpRequest) -> HttpResponse:
-    # WORK ON (MESSAGES AND UI) & extend with email field
+    # This view handles user registration.
     if request.method == "POST":
         form = UserAddForm(data=request.POST)
         if form.is_valid():
@@ -74,7 +75,7 @@ def register_user_view(request: HttpRequest) -> HttpResponse:
 
 def login_view(request: HttpRequest) -> HttpResponse:
     """
-    work on me - needs messages and redirects
+    This view handles the user login.
 
     """
     login_user = request.user
@@ -125,11 +126,13 @@ def login_view(request: HttpRequest) -> HttpResponse:
 
 
 def logout_view(request: HttpRequest) -> HttpResponse:
+    # This view handles user logout.
     logout(request)
     return redirect("accounts:login")
 
 
 def users_list(request: HttpRequest) -> HttpResponse:
+    # This view displays a list of all users.
     employees = Employee.objects.all()
     return render(
         request,
@@ -139,6 +142,7 @@ def users_list(request: HttpRequest) -> HttpResponse:
 
 
 def users_unblock(request, id):
+    # This view unblocks a user (makes them active)
     user = get_object_or_404(User, id=id)
     emp = Employee.objects.filter(user=user).first()
     emp.is_blocked = False
@@ -150,6 +154,7 @@ def users_unblock(request, id):
 
 
 def users_block(request, id):
+    # This view blocks a user (makes them inactive).
     user = get_object_or_404(User, id=id)
     emp = Employee.objects.filter(user=user).first()
     emp.is_blocked = True
@@ -162,6 +167,7 @@ def users_block(request, id):
 
 
 def users_blocked_list(request: HttpRequest) -> HttpResponse:
+    # This view displays a list of all blocked users.
     blocked_employees = Employee.objects.all_blocked_employees()
     return render(
         request,
@@ -176,7 +182,8 @@ def users_blocked_list(request: HttpRequest) -> HttpResponse:
 """ """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """"""
 
 
-def initialize_context(request):
+def initialize_context(request: HttpRequest) -> Dict[str, Any]:
+    # This function initializes the context for Azure SSO
     context = {}
     error = request.session.pop("flash_error", None)
     if error is not None:
@@ -190,7 +197,8 @@ def initialize_context(request):
     return context
 
 
-def sign_in(request):
+def sign_in(request: HttpRequest) -> HttpResponseRedirect:
+    # This function initiates the Azure SSO sign in flow.
     # Get the sign-in flow
     flow = get_sign_in_flow()
     # Save the expected flow so we can use it in the callback
@@ -201,13 +209,15 @@ def sign_in(request):
     return HttpResponseRedirect(flow["auth_uri"])
 
 
-def sign_out(request):
+def sign_out(request: HttpRequest) -> HttpResponseRedirect:
+    # This function signs out the user from Azure SSO
     # Clear out the user and token
     remove_user_and_token(request)
     return HttpResponseRedirect(reverse("home"))
 
 
-def get_or_create_user(user_id, request, name=None):
+def get_or_create_user(user_id: str, request: HttpRequest, name=None) -> User:
+    # This function retrieves a user, or creates one if the user doesn't exist.
     user = User.objects.filter(username=user_id).first()
 
     if not user:
@@ -220,7 +230,8 @@ def get_or_create_user(user_id, request, name=None):
     return user
 
 
-def callback(request):
+def callback(request: HttpRequest) -> HttpResponseRedirect:
+    # This function handles the callback from the Azure SSO sign in flow.
     # Make the token request
     result = get_token_from_code(
         request

@@ -1,15 +1,9 @@
-from ast import Dict
-from typing import Any
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, HttpRequest
+from django.http import HttpResponse, HttpRequest
 from django.contrib.auth.models import User
-from django.conf import settings
 from django.db.models import Q
-import datetime
-from django.core.mail import send_mail
 from django.contrib import messages
-from django.urls import reverse
 from employee.forms import EmployeeCreateForm
 from leave.models import Leave
 from employee.models import *
@@ -17,11 +11,12 @@ from leave.forms import LeaveCreationForm
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:
+    # Fetch and display relevant summaries and data on dashboard
     """
     Summary of all apps - display here with charts etc.
     eg.lEAVE - PENDING|APPROVED|RECENT|REJECTED - TOTAL THIS MONTH or NEXT MONTH
     EMPLOYEE - TOTAL | GENDER
-    CHART - AVERAGE EMPLOYEE AGES
+
     """
     dataset = dict()
     user = request.user
@@ -45,6 +40,7 @@ def dashboard(request: HttpRequest) -> HttpResponse:
 
 
 def dashboard_employees(request: HttpRequest) -> HttpResponse:
+    # Fetch and display all employees data
     if not (
         request.user.is_authenticated
         and request.user.is_superuser
@@ -74,6 +70,7 @@ def dashboard_employees(request: HttpRequest) -> HttpResponse:
 
 
 def dashboard_employees_create(request: HttpRequest) -> HttpResponse:
+    # Create new employee record
     if not (
         request.user.is_authenticated
         and request.user.is_superuser
@@ -125,6 +122,7 @@ def dashboard_employees_create(request: HttpRequest) -> HttpResponse:
 
 
 def employee_edit_data(request: HttpRequest, id: int) -> HttpResponse:
+    # Fetch specific employee record to edit
     if not (
         request.user.is_authenticated
         and request.user.is_superuser
@@ -212,6 +210,7 @@ def employee_edit_data(request: HttpRequest, id: int) -> HttpResponse:
 
 
 def dashboard_employee_info(request: HttpRequest, id: int) -> HttpResponse:
+    # Display information of a specific employee
     if not request.user.is_authenticated:
         return redirect("/")
 
@@ -227,6 +226,7 @@ def dashboard_employee_info(request: HttpRequest, id: int) -> HttpResponse:
 
 
 def leave_creation(request: HttpRequest) -> HttpResponse:
+    # Leave Creation View
     if not request.user.is_authenticated:
         return redirect("accounts:login")
     if request.method == "POST":
@@ -260,6 +260,7 @@ def leave_creation(request: HttpRequest) -> HttpResponse:
 
 
 def leaves_list(request: HttpRequest) -> HttpResponse:
+    # Display all leave requests in list
     if not (request.user.is_staff and request.user.is_superuser):
         return redirect("/")
     leaves = Leave.objects.all_pending_leaves()
@@ -271,6 +272,7 @@ def leaves_list(request: HttpRequest) -> HttpResponse:
 
 
 def leaves_approved_list(request: HttpRequest) -> HttpResponse:
+    # Display list of all approved leaves
     if not (request.user.is_superuser and request.user.is_staff):
         return redirect("/")
     leaves = (
@@ -284,6 +286,7 @@ def leaves_approved_list(request: HttpRequest) -> HttpResponse:
 
 
 def leaves_view(request: HttpRequest, id: int) -> HttpResponse:
+    # View details of a specific leave request
     if not (request.user.is_authenticated):
         return redirect("/")
 
@@ -303,6 +306,7 @@ def leaves_view(request: HttpRequest, id: int) -> HttpResponse:
 
 
 def approve_leave(request: HttpRequest, id: int) -> HttpResponse:
+    # Approve a leave request
     if not (request.user.is_superuser and request.user.is_authenticated):
         return redirect("/")
     leave = get_object_or_404(Leave, id=id)
@@ -319,6 +323,7 @@ def approve_leave(request: HttpRequest, id: int) -> HttpResponse:
 
 
 def cancel_leaves_list(request: HttpRequest) -> HttpResponse:
+    # Display all cancelled leaves in a list
     if not (request.user.is_superuser and request.user.is_authenticated):
         return redirect("/")
     leaves = Leave.objects.all_cancel_leaves()
@@ -330,6 +335,7 @@ def cancel_leaves_list(request: HttpRequest) -> HttpResponse:
 
 
 def unapprove_leave(request: HttpRequest, id: int) -> HttpResponse:
+    # Unapprove a leave request
     if not (request.user.is_authenticated and request.user.is_superuser):
         return redirect("/")
     leave = get_object_or_404(Leave, id=id)
@@ -338,6 +344,7 @@ def unapprove_leave(request: HttpRequest, id: int) -> HttpResponse:
 
 
 def cancel_leave(request: HttpRequest, id: int) -> HttpResponse:
+    # Cancel a leave request
     if not (request.user.is_superuser and request.user.is_authenticated):
         return redirect("/")
     leave = get_object_or_404(Leave, id=id)
@@ -355,6 +362,7 @@ def cancel_leave(request: HttpRequest, id: int) -> HttpResponse:
 
 # Current section -> here
 def uncancel_leave(request: HttpRequest, id: int) -> HttpResponse:
+    # Uncancel a previously cancelled leave request
     if not (request.user.is_superuser and request.user.is_authenticated):
         return redirect("/")
     leave = get_object_or_404(Leave, id=id)
@@ -372,6 +380,7 @@ def uncancel_leave(request: HttpRequest, id: int) -> HttpResponse:
 
 
 def leave_rejected_list(request):
+    # View list of all rejected leaves
     dataset = dict()
     leave = Leave.objects.all_rejected_leaves()
 
@@ -380,6 +389,7 @@ def leave_rejected_list(request):
 
 
 def reject_leave(request: HttpRequest, id: int) -> HttpResponse:
+    # Reject a leave request
     dataset = dict()
     leave = get_object_or_404(Leave, id=id)
     leave.reject_leave
@@ -394,6 +404,7 @@ def reject_leave(request: HttpRequest, id: int) -> HttpResponse:
 
 
 def unreject_leave(request: HttpRequest, id: int) -> HttpResponse:
+    # Undo rejection of a leave request
     leave = get_object_or_404(Leave, id=id)
     leave.status = "pending"
     leave.is_approved = False
@@ -409,7 +420,7 @@ def unreject_leave(request: HttpRequest, id: int) -> HttpResponse:
 
 #  staffs leaves table user only
 def view_my_leave_table(request: HttpRequest) -> HttpResponse:
-    # work on the logics
+    # View list of leaves for the logged-in staff member
     if request.user.is_authenticated:
         user = request.user
         leaves = Leave.objects.filter(user=user)

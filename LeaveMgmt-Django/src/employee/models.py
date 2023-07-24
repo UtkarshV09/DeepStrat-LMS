@@ -2,45 +2,54 @@ import datetime
 from employee.utility import code_format
 from django.db import models
 from employee.managers import EmployeeManager
-from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
-from leave.models import Leave
+
+# Importing necessary modules and packages.
 
 
 # Create your models here.
+# Define the Role model
 class Role(models.Model):
     name = models.CharField(max_length=125)
     description = models.CharField(max_length=125, null=True, blank=True)
 
+    # Fields for tracking the creation and update times of each instance.
     created = models.DateTimeField(verbose_name=_("Created"), auto_now_add=True)
     updated = models.DateTimeField(verbose_name=_("Updated"), auto_now=True)
 
+    # Meta class for additional model options
     class Meta:
         verbose_name = _("Role")
         verbose_name_plural = _("Roles")
         ordering = ["name", "created"]
 
+    # String representation of each instance of this model
     def __str__(self) -> str:
         return self.name
 
 
+# Define the Department model
 class Department(models.Model):
     name = models.CharField(max_length=125)
     description = models.CharField(max_length=125, null=True, blank=True)
 
+    # Fields for tracking the creation and update times of each instance.
     created = models.DateTimeField(verbose_name=_("Created"), auto_now_add=True)
     updated = models.DateTimeField(verbose_name=_("Updated"), auto_now=True)
 
+    # Meta class for additional model options
     class Meta:
         verbose_name = _("Department")
         verbose_name_plural = _("Departments")
         ordering = ["name", "created"]
 
+    # String representation of each instance of this model
     def __str__(self) -> str:
         return self.name
 
 
+# Define the Employee mode
 class Employee(models.Model):
     MALE = "male"
     FEMALE = "female"
@@ -151,14 +160,17 @@ class Employee(models.Model):
     # PLUG MANAGERS
     objects = EmployeeManager()
 
+    # Meta class for additional model options
     class Meta:
         verbose_name = _("Employee")
         verbose_name_plural = _("Employees")
         ordering = ["-created"]
 
+    # String representation of each instance of this model
     def __str__(self) -> str:
         return self.get_full_name
 
+    # Compute the full name of the employee
     @property
     def get_full_name(self) -> str:
         fullname = ""
@@ -174,6 +186,7 @@ class Employee(models.Model):
             return fullname
         return
 
+    # Compute the age of the employee
     @property
     def get_age(self) -> int:
         current_year = datetime.date.today().year
@@ -182,10 +195,12 @@ class Employee(models.Model):
             return current_year - dateofbirth_year
         return
 
+    # Check if the employee can apply for leave (to be implemented)
     @property
     def can_apply_leave(self):
         pass
 
+    # Override the save method to process the employee ID in a specific way before saving
     def save(self, *args, **kwargs):
         """
         overriding the save method - for every instance that calls the save method

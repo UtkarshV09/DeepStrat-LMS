@@ -13,7 +13,7 @@ EMERGENCY = "emergency"
 STUDY = "study"
 MATERNITY = "maternity"
 
-
+# Create a tuple of tuples to store leave types and their human readable names
 LEAVE_TYPE = (
     (SICK, "Sick Leave"),
     (CASUAL, "Casual Leave"),
@@ -21,10 +21,11 @@ LEAVE_TYPE = (
     (STUDY, "Study Leave"),
     (MATERNITY, "Maternity Leave"),
 )
-
+# Define the default leave days
 DAYS = 30
 
 
+# Create a Leave model
 class Leave(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     startdate = models.DateField(
@@ -63,21 +64,23 @@ class Leave(models.Model):
 
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
-
+    # Set the custom manager for the model
     objects = LeaveManager()
 
+    # Meta class for the Leave model
     class Meta:
         verbose_name = _("Leave")
         verbose_name_plural = _("Leaves")
         ordering = ["-created"]  # recent objects
 
+    # __str__ method to represent the Leave object as a string
     def __str__(self) -> str:
         return "{0} - {1}".format(self.leavetype, self.user)
 
     @property
     def pretty_leave(self) -> str:
         """
-        i don't like the __str__ of leave object - this is a pretty one :-)
+        This provides a pretty representation of the leave object.
         """
         leave = self.leavetype
         user = self.user
@@ -86,6 +89,9 @@ class Leave(models.Model):
 
     @property
     def leave_days(self) -> int:
+        """
+        This property calculates the number of leave days based on start and end dates.
+        """
         days_count = ""
         startdate = self.startdate
         enddate = self.enddate
@@ -98,6 +104,7 @@ class Leave(models.Model):
     def leave_approved(self) -> bool:
         return self.is_approved == True
 
+    # These properties handle the approval, disapproval, cancellation, and rejection of leaves
     @property
     def approve_leave(self) -> any:
         if not self.is_approved:
