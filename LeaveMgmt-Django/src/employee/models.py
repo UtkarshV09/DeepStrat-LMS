@@ -1,4 +1,5 @@
 import datetime
+
 from employee.utility import code_format
 from django.db import models
 from employee.managers import EmployeeManager

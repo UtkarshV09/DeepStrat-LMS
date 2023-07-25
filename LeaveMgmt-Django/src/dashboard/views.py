@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib import messages
@@ -69,7 +69,7 @@ def dashboard_employees(request: HttpRequest) -> HttpResponse:
     return render(request, 'dashboard/employee_app.html', dataset)
 
 
-def dashboard_employees_create(request: HttpRequest) -> HttpResponse:
+def dashboard_employees_create(request: HttpRequest) -> HttpResponseRedirect:
     # Create new employee record
     if not (
         request.user.is_authenticated
@@ -224,9 +224,42 @@ def dashboard_employee_info(request: HttpRequest, id: int) -> HttpResponse:
 
 # ---------------------LEAVE-------------------------------------------
 
+"""
+Helper Method
+"""
+import calendar
+from dateutil.relativedelta import relativedelta
 
-def leave_creation(request: HttpRequest) -> HttpResponse:
-    # Leave Creation View
+
+def get_total_leaves(user, max_allowed_leaves=7):
+    today = datetime.datetime.now()
+    no_of_day_in_current_month = calendar.monthrange(today.year, today.month)[1]
+    first_day, last_day = today.replace(day=1), today.replace(day=1) + relativedelta(
+        days=no_of_day_in_current_month - 1
+    )
+    # no_of_day_in_current_month, first_day.strftime("%Y-%m-%d"), last_day.strftime("%Y-%m-%d")
+    leaves_in_current_month = Leave.objects.filter(
+        user=user, startdate__range=(first_day, last_day), is_approved=True
+    )
+    for lapp in leaves_in_current_month:
+        # dates_d = [datetime.datetime(lapp.startdate + datetime.timedelta(x)) for x in range((lapp.enddate - lapp.startdate).days + 1)]
+        dates_d = [
+            lapp.startdate + datetime.timedelta(x)
+            for x in range((lapp.enddate - lapp.startdate).days + 1)
+        ]
+        working_day_dates = [
+            x
+            for x in dates_d
+            if datetime.datetime.strptime(x.strftime('%Y-%m-%d'), '%Y-%m-%d').weekday()
+            < 5
+        ]
+        print(
+            f'{lapp.user.email} -- {lapp.startdate} --- no. of working days = {len(working_day_dates)}'
+        )
+    print(leaves_in_current_month)
+
+
+def leave_creation(request: HttpRequest) -> HttpResponseRedirect:
     if not request.user.is_authenticated:
         return redirect('accounts:login')
     if request.method == 'POST':
@@ -252,6 +285,7 @@ def leave_creation(request: HttpRequest) -> HttpResponse:
         )
         return redirect('dashboard:createleave')
 
+    get_total_leaves(request.user)
     dataset = dict()
     form = LeaveCreationForm()
     dataset['form'] = form
@@ -305,7 +339,7 @@ def leaves_view(request: HttpRequest, id: int) -> HttpResponse:
     )
 
 
-def approve_leave(request: HttpRequest, id: int) -> HttpResponse:
+def approve_leave(request: HttpRequest, id: int) -> HttpResponseRedirect:
     # Approve a leave request
     if not (request.user.is_superuser and request.user.is_authenticated):
         return redirect('/')
@@ -334,7 +368,7 @@ def cancel_leaves_list(request: HttpRequest) -> HttpResponse:
     )
 
 
-def unapprove_leave(request: HttpRequest, id: int) -> HttpResponse:
+def unapprove_leave(request: HttpRequest, id: int) -> HttpResponseRedirect:
     # Unapprove a leave request
     if not (request.user.is_authenticated and request.user.is_superuser):
         return redirect('/')
@@ -343,7 +377,7 @@ def unapprove_leave(request: HttpRequest, id: int) -> HttpResponse:
     return redirect('dashboard:leaveslist')  # redirect to unapproved list
 
 
-def cancel_leave(request: HttpRequest, id: int) -> HttpResponse:
+def cancel_leave(request: HttpRequest, id: int) -> HttpResponseRedirect:
     # Cancel a leave request
     if not (request.user.is_superuser and request.user.is_authenticated):
         return redirect('/')
@@ -361,7 +395,7 @@ def cancel_leave(request: HttpRequest, id: int) -> HttpResponse:
 
 
 # Current section -> here
-def uncancel_leave(request: HttpRequest, id: int) -> HttpResponse:
+def uncancel_leave(request: HttpRequest, id: int) -> HttpResponseRedirect:
     # Uncancel a previously cancelled leave request
     if not (request.user.is_superuser and request.user.is_authenticated):
         return redirect('/')
@@ -388,7 +422,7 @@ def leave_rejected_list(request):
     return render(request, 'dashboard/rejected_leaves_list.html', dataset)
 
 
-def reject_leave(request: HttpRequest, id: int) -> HttpResponse:
+def reject_leave(request: HttpRequest, id: int) -> HttpResponseRedirect:
     # Reject a leave request
     dataset = dict()
     leave = get_object_or_404(Leave, id=id)
@@ -403,7 +437,7 @@ def reject_leave(request: HttpRequest, id: int) -> HttpResponse:
     # return HttpResponse(id)
 
 
-def unreject_leave(request: HttpRequest, id: int) -> HttpResponse:
+def unreject_leave(request: HttpRequest, id: int) -> HttpResponseRedirect:
     # Undo rejection of a leave request
     leave = get_object_or_404(Leave, id=id)
     leave.status = 'pending'

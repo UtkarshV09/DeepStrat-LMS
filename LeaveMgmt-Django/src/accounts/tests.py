@@ -5,11 +5,55 @@ from employee.models import Employee
 from .forms import UserAddForm, UserLogin
 from .views import register_user_view, login_view
 from django.contrib.auth.models import AnonymousUser
-from .models import Employee
 
 
 # testing the UserAddForm
 class TestUserAddForm(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='test', password='test')
+        self.change_password_url = reverse('accounts:changepassword')
+
+    def test_change_password_view_authenticated(self):
+        self.client.login(username='test', password='test')
+        response = self.client.get(self.change_password_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'accounts/change_password_form.html')
+
+    def test_change_password_view_unauthenticated(self):
+        response = self.client.get(self.change_password_url)
+        self.assertEqual(response.status_code, 302)  # Should redirect to login page
+
+    def test_change_password_valid_data(self):
+        self.client.login(username='test', password='test')
+        response = self.client.post(
+            self.change_password_url,
+            data={
+                'old_password': 'test',
+                'new_password1': 'newtestpassword',
+                'new_password2': 'newtestpassword',
+            },
+        )
+        self.assertEqual(
+            response.status_code, 302
+        )  # Should redirect after changing password
+
+        # Check if the password was changed
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('newtestpassword'))
+
+    def test_change_password_invalid_data(self):
+        self.client.login(username='test', password='test')
+        response = self.client.post(self.change_password_url, data={})
+        self.assertEqual(response.status_code, 200)  # Should stay on the same page
+
+        # Check if the password was not changed
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('test'))
+
+    def tearDown(self):
+        self.user.delete()
+
     def test_form_validity(self):
         form = UserAddForm(
             data={
@@ -24,6 +68,56 @@ class TestUserAddForm(TestCase):
     def test_form_invalidity(self):
         form = UserAddForm(data={})
         self.assertFalse(form.is_valid())
+
+
+# testing the logout_view
+class TestLogoutView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='test', password='test')
+        self.logout_url = reverse('accounts:logout')
+
+    def test_logout_view_authenticated(self):
+        self.client.login(username='test', password='test')
+        response = self.client.get(self.logout_url)
+        self.assertEqual(response.status_code, 302)  # Should redirect after logout
+
+        # Check if the user is authenticated
+        self.user = User.objects.get(username='test')
+        self.assertFalse(self.user.is_authenticated)
+
+    def test_logout_view_unauthenticated(self):
+        response = self.client.get(self.logout_url)
+        self.assertEqual(response.status_code, 302)  # Should redirect to login page
+
+    def tearDown(self):
+        self.user.delete()
+
+
+# testing the register_user_view with invalid data
+class TestRegisterUserViewInvalidData(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.register_url = reverse('accounts:register')
+
+    def test_register_view_invalid_data(self):
+        response = self.client.post(self.register_url, data={})
+        self.assertEqual(response.status_code, 200)  # Should stay on the same page
+
+        # Check if the user was not created
+        users = User.objects.all()
+        self.assertEqual(len(users), 0)
+
+
+# testing the login_view with invalid data
+class TestLoginViewInvalidData(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.login_url = reverse('accounts:login')
+
+    def test_login_view_invalid_data(self):
+        response = self.client.post(self.login_url, data={})
+        self.assertEqual(response.status_code, 200)  # Should stay on the same page
 
 
 # testing the UserLogin form

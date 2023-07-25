@@ -78,6 +78,11 @@ class Leave(models.Model):
         return '{0} - {1}'.format(self.leavetype, self.user)
 
     @property
+    def can_apply_leave(self) -> bool:
+        num_leaves = Leave.objects.filter(employee=self).count()
+        return num_leaves < 7
+
+    @property
     def pretty_leave(self) -> str:
         """
         This provides a pretty representation of the leave object.
