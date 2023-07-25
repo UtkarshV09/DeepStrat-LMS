@@ -222,6 +222,7 @@ def dashboard_employee_info(request: HttpRequest, id: int) -> HttpResponse:
     return render(request, 'dashboard/employee_detail.html', dataset)
 
 
+
 # ---------------------LEAVE-------------------------------------------
 
 """
