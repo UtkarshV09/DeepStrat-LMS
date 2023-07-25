@@ -76,6 +76,108 @@ class TestUserAddForm(TestCase):
         self.assertFalse(form.is_valid())
 
 
+# Testing the creation of a superuser
+class TestSuperUserCreation(TestCase):
+    def setUp(self):
+        self.superuser = User.objects.create_superuser(
+            username='admin', password='admin'
+        )
+
+    def test_superuser_creation(self):
+        self.assertEqual(self.superuser.username, 'admin')
+        self.assertTrue(self.superuser.is_superuser)
+
+    def tearDown(self):
+        self.superuser.delete()
+
+
+# Testing the registration with an already registered username
+class TestUserRegistration(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='test', password='test')
+        self.register_url = reverse('accounts:register')
+
+    def test_register_existing_username(self):
+        response = self.client.post(
+            self.register_url,
+            data={
+                'username': 'test',
+                'password1': 'test_password',
+                'password2': 'test_password',
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('A user with that username already exists.' in response.content)
+
+    def tearDown(self):
+        self.user.delete()
+
+
+# Test the login view with a valid user
+class TestLoginViewValidUser(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='test', password='test')
+        self.login_url = reverse('accounts:login')
+
+    def test_login_view_valid_user(self):
+        response = self.client.post(
+            self.login_url, data={'username': 'test', 'password': 'test'}
+        )
+        self.assertEqual(response.status_code, 302)  # Should redirect to the home page
+        self.user = User.objects.get(username='test')
+        self.assertTrue(self.user.is_authenticated)
+
+    def tearDown(self):
+        self.user.delete()
+
+
+# Testing the login attempt with wrong password
+class TestLoginViewInvalidPassword(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='test', password='test')
+        self.login_url = reverse('accounts:login')
+
+    def test_login_view_invalid_password(self):
+        response = self.client.post(
+            self.login_url, data={'username': 'test', 'password': 'wrong_password'}
+        )
+        self.assertEqual(response.status_code, 200)  # Should stay on the same page
+        self.assertTrue(
+            'Please enter a correct username and password.' in response.content
+        )
+
+    def tearDown(self):
+        self.user.delete()
+
+
+# Testing the case where the user tries to change password with invalid old password
+class TestChangePasswordInvalidOld(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='test', password='test')
+        self.change_password_url = reverse('accounts:changepassword')
+
+    def test_change_password_invalid_old(self):
+        self.client.login(username='test', password='test')
+        response = self.client.post(
+            self.change_password_url,
+            data={
+                'old_password': 'wrong_old_password',
+                'new_password1': 'new_password',
+                'new_password2': 'new_password',
+            },
+        )
+        self.assertEqual(response.status_code, 200)  # Should stay on the same page
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('test'))
+
+    def tearDown(self):
+        self.user.delete()
+
+
 # testing the logout_view
 class TestLogoutView(TestCase):
     def setUp(self):

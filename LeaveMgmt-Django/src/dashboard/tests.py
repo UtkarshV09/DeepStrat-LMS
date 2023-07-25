@@ -92,3 +92,130 @@ class DashboardTest(TestCase):
         self.client.login(username='john', password='johnpassword')
         response = self.client.get(reverse('dashboard:staffleavetable'))
         self.assertEqual(response.status_code, 200)
+
+    def test_unauthenticated_user_redirect_to_login(self):
+        response = self.client.get(reverse('dashboard:createleave'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/')
+
+    def test_leave_creation_with_invalid_date(self):
+        self.client.login(username='username', password='password')
+        response = self.client.post(
+            reverse('dashboard:createleave'),
+            data={'startdate': '2023-08-01', 'enddate': '2023-07-31'},
+        )
+        self.assertContains(
+            response, 'failed to Request a Leave,please check entry dates'
+        )
+
+    def test_leave_creation_with_valid_date(self):
+        self.client.login(username='username', password='password')
+        response = self.client.post(
+            reverse('dashboard:createleave'),
+            data={'startdate': '2023-07-25', 'enddate': '2023-07-30'},
+        )
+        self.assertContains(response, 'Leave Request Sent,wait for Admins response')
+
+    def test_unauthorized_user_access_leaves_list(self):
+        self.client.login(username='username', password='password')
+        response = self.client.get(reverse('dashboard:leaveslist'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/')
+
+    def test_authorized_user_access_leaves_list(self):
+        self.client.login(username='staffusername', password='password')
+        response = self.client.get(reverse('dashboard:leaveslist'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_unauthenticated_user_access_leave_view(self):
+        response = self.client.get(reverse('dashboard:userleaveview', kwargs={'id': 1}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/')
+
+    def test_authenticated_user_access_nonexistent_leave_view(self):
+        self.client.login(username='username', password='password')
+        response = self.client.get(
+            reverse('dashboard:userleaveview', kwargs={'id': 9999})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_non_superuser_approve_leave(self):
+        self.client.login(username='username', password='password')
+        response = self.client.get(reverse('dashboard:approveleave', kwargs={'id': 1}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/')
+
+    def test_superuser_approve_nonexistent_leave(self):
+        self.client.login(username='superusername', password='password')
+        response = self.client.get(
+            reverse('dashboard:approveleave', kwargs={'id': 9999})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_superuser_approve_valid_leave(self):
+        self.client.login(username='superusername', password='password')
+        response = self.client.get(reverse('dashboard:approveleave', kwargs={'id': 1}))
+        self.assertEqual(response.status_code, 302)
+        self.assertContains(response, 'Leave successfully approved for')
+
+    def test_unauthenticated_user_access_cancel_leaves_list(self):
+        response = self.client.get(reverse('dashboard:canceleaveslist'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/')
+
+    def test_non_superuser_unapprove_leave(self):
+        self.client.login(username='username', password='password')
+        response = self.client.get(
+            reverse('dashboard:unapproveleave', kwargs={'id': 1})
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/')
+
+    def test_superuser_unapprove_nonexistent_leave(self):
+        self.client.login(username='superusername', password='password')
+        response = self.client.get(
+            reverse('dashboard:unapproveleave', kwargs={'id': 9999})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_superuser_unapprove_valid_leave(self):
+        self.client.login(username='superusername', password='password')
+        response = self.client.get(
+            reverse('dashboard:unapproveleave', kwargs={'id': 1})
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('dashboard:leaveslist'))
+
+    def test_non_superuser_cancel_leave(self):
+        self.client.login(username='username', password='password')
+        response = self.client.get(reverse('dashboard:cancelleave', kwargs={'id': 1}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/')
+
+    def test_superuser_cancel_nonexistent_leave(self):
+        self.client.login(username='superusername', password='password')
+        response = self.client.get(
+            reverse('dashboard:cancelleave', kwargs={'id': 9999})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_superuser_cancel_valid_leave(self):
+        self.client.login(username='superusername', password='password')
+        response = self.client.get(reverse('dashboard:cancelleave', kwargs={'id': 1}))
+        self.assertEqual(response.status_code, 302)
+        self.assertContains(response, 'Leave is canceled')
+
+    def test_unauthenticated_user_access_leave_rejected_list(self):
+        response = self.client.get(reverse('dashboard:leavesrejected'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_unauthenticated_user_unreject_leave(self):
+        response = self.client.get(reverse('dashboard:unrejectleave', kwargs={'id': 1}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/')
+
+    def test_superuser_unreject_valid_leave(self):
+        self.client.login(username='superusername', password='password')
+        response = self.client.get(reverse('dashboard:unrejectleave', kwargs={'id': 1}))
+        self.assertEqual(response.status_code, 302)
+        self.assertContains(response, 'Leave is now Unrejected')
