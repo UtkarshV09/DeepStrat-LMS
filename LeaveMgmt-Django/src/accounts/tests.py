@@ -5,6 +5,12 @@ from employee.models import Employee
 from .forms import UserAddForm, UserLogin
 from .views import register_user_view, login_view
 from django.contrib.auth.models import AnonymousUser
+from unittest.mock import patch, Mock, MagicMock
+from django.test import TestCase
+from django.http import HttpRequest
+import yaml
+import msal
+import auth_helper
 
 
 # testing the UserAddForm
@@ -204,3 +210,74 @@ class UserViewTest(TestCase):
 
     def tearDown(self):
         self.user.delete()
+
+
+"""
+SSO TESTING
+"""
+
+
+class TestAuthHelper(TestCase):
+    @patch('msal.ConfidentialClientApplication')
+    def test_get_msal_app(self, mock_msal_app):
+        mock_cache = MagicMock()
+        auth_helper.get_msal_app(mock_cache)
+        mock_msal_app.assert_called()
+
+    @patch('auth_helper.get_msal_app')
+    @patch('msal.ConfidentialClientApplication.initiate_auth_code_flow')
+    def test_get_sign_in_flow(self, mock_auth_flow, mock_msal_app):
+        mock_msal_app.return_value = mock_auth_flow
+        auth_helper.get_sign_in_flow()
+        mock_auth_flow.assert_called()
+
+    @patch('auth_helper.get_msal_app')
+    @patch('auth_helper.load_cache')
+    @patch('auth_helper.save_cache')
+    @patch('msal.ConfidentialClientApplication.acquire_token_by_auth_code_flow')
+    def test_get_token_from_code(
+        self, mock_token, mock_save_cache, mock_load_cache, mock_msal_app
+    ):
+        mock_request = Mock(spec=HttpRequest)
+        mock_msal_app.return_value = mock_token
+        auth_helper.get_token_from_code(mock_request)
+        mock_token.assert_called()
+
+    def test_store_user(self):
+        mock_request = Mock(spec=HttpRequest)
+        mock_user = {
+            'displayName': 'Mocked User',
+            'mail': 'test@mail.com',
+            'mailboxSettings': {'timeZone': 'UTC'},
+        }
+        auth_helper.store_user(mock_request, mock_user)
+        self.assertEqual(
+            mock_request.user,
+            {
+                'is_authenticated': True,
+                'name': 'Mocked User',
+                'email': 'test@mail.com',
+                'timeZone': 'UTC',
+            },
+        )
+
+    @patch('auth_helper.get_msal_app')
+    @patch('auth_helper.load_cache')
+    @patch('auth_helper.save_cache')
+    @patch('msal.ConfidentialClientApplication.acquire_token_silent')
+    def test_get_token(
+        self, mock_token, mock_save_cache, mock_load_cache, mock_msal_app
+    ):
+        mock_request = Mock(spec=HttpRequest)
+        mock_msal_app.return_value = mock_token
+        mock_token.return_value = {'access_token': 'mocked_access_token'}
+        result = auth_helper.get_token(mock_request)
+        mock_token.assert_called()
+        self.assertEqual(result, 'mocked_access_token')
+
+    def test_remove_user_and_token(self):
+        mock_request = Mock(spec=HttpRequest)
+        mock_request.session = {'token_cache': 'token', 'user': 'user'}
+        auth_helper.remove_user_and_token(mock_request)
+        self.assertFalse('token_cache' in mock_request.session)
+        self.assertFalse('user' in mock_request.session)

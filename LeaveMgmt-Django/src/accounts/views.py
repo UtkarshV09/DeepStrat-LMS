@@ -13,7 +13,7 @@ from graph_helper import *
 from typing import Dict
 
 
-def changepassword(request: HttpRequest) -> HttpResponseRedirect:
+def changepassword(request: HttpRequest):
     if not request.user.is_authenticated:
         return redirect('/')
     """

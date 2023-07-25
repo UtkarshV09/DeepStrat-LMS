@@ -1,8 +1,10 @@
 import datetime
+import unittest
 from django.test import TestCase
 from employee.models import Role, Department, Employee
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from employee.utility import check_code_length, code_format
 
 
 class RoleModelTest(TestCase):
@@ -74,3 +76,28 @@ class EmployeeModelTest(TestCase):
         employee = Employee.objects.get(id=1)
         current_year = datetime.date.today().year
         self.assertEqual(employee.get_age, current_year - 1990)
+
+
+class TestUtilityFunctions(unittest.TestCase):
+    def test_check_code_length(self):
+        self.assertTrue(check_code_length('ABCDE'))  # test with 5 characters
+        self.assertTrue(check_code_length('ABCDEF'))  # test with more than 5 characters
+        self.assertFalse(check_code_length('ABCD'))  # test with less than 5 characters
+        self.assertFalse(check_code_length(''))  # test with empty string
+        self.assertFalse(check_code_length(None))  # test with None
+
+    def test_code_format(self):
+        self.assertEqual(
+            code_format('A0091'), 'RGL/A0/091'
+        )  # test with a valid code without RGL prefix
+        self.assertEqual(
+            code_format('RGLA0091'), 'RGL/A0/091'
+        )  # test with a valid code with RGL prefix
+        self.assertEqual(
+            code_format('RGL/A0/091'), 'RGL/A0/091'
+        )  # test with a valid code with RGL prefix and slashes
+        self.assertIsNone(
+            code_format('A091')
+        )  # test with a code less than 5 characters
+        self.assertIsNone(code_format(''))  # test with an empty string
+        self.assertIsNone(code_format(None))  # test with None
