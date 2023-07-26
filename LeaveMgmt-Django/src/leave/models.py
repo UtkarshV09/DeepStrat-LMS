@@ -111,29 +111,37 @@ class Leave(models.Model):
 
     # These properties handle the approval, disapproval, cancellation, and rejection of leaves
     @property
-    def approve_leave(self) -> any:
-        if not self.is_approved:
+    def approve_leave(self):
+        if self.status == 'approved':
+            raise ValueError('This leave request has already been approved.')
+        else:
             self.is_approved = True
             self.status = 'approved'
             self.save()
 
     @property
-    def unapprove_leave(self) -> any:
-        if self.is_approved:
+    def unapprove_leave(self):
+        if self.status != 'approved':
+            raise ValueError('This leave request is not currently approved.')
+        else:
             self.is_approved = False
             self.status = 'pending'
             self.save()
 
     @property
-    def leaves_cancel(self) -> any:
-        if self.is_approved or not self.is_approved:
+    def leaves_cancel(self):
+        if self.status == 'cancelled':
+            raise ValueError('This leave request has already been cancelled.')
+        else:
             self.is_approved = False
             self.status = 'cancelled'
             self.save()
 
     @property
-    def reject_leave(self) -> any:
-        if self.is_approved or not self.is_approved:
+    def reject_leave(self):
+        if self.status == 'rejected':
+            raise ValueError('This leave request has already been rejected.')
+        else:
             self.is_approved = False
             self.status = 'rejected'
             self.save()

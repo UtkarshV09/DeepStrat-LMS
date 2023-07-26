@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from datetime import date, timedelta
 from leave.models import Leave
+from .forms import LeaveCreationForm
+import datetime
 
 
 class LeaveModelTest(TestCase):
@@ -75,3 +77,39 @@ class LeaveModelTest(TestCase):
         self.leave.enddate = date.today()
         self.leave.save()
         self.assertEqual(self.leave.leave_days, 0)
+
+
+class LeaveCreationFormTest(TestCase):
+    def test_form_valid(self):
+        form_data = {
+            'startdate': datetime.date.today() + datetime.timedelta(days=1),
+            'enddate': datetime.date.today() + datetime.timedelta(days=5),
+            'leavetype': 'Sick Leave',
+            'reason': 'Medical appointment',
+        }
+        form = LeaveCreationForm(data=form_data)
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_form_invalid_dates_in_past(self):
+        form_data = {
+            'startdate': datetime.date.today() - datetime.timedelta(days=5),
+            'enddate': datetime.date.today() - datetime.timedelta(days=1),
+            'leavetype': 'Sick Leave',
+            'reason': 'Medical appointment',
+        }
+        form = LeaveCreationForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            form.errors['enddate'], ['Selected dates are incorrect,please select again']
+        )
+
+    def test_form_invalid_startdate_after_enddate(self):
+        form_data = {
+            'startdate': datetime.date.today() + datetime.timedelta(days=5),
+            'enddate': datetime.date.today() + datetime.timedelta(days=1),
+            'leavetype': 'Sick Leave',
+            'reason': 'Medical appointment',
+        }
+        form = LeaveCreationForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['enddate'], ['Selected dates are wrong'])
