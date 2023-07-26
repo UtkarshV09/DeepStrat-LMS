@@ -1,5 +1,5 @@
-app_id: "d285fd1a-7614-49b7-9388-9ae12b0e4a09"
-app_secret: "gT48Q~3M24IP2XlWwQ3UXdU7S1yAcEdL3lLn6bBb"
+app_id: "App ID"
+app_secret: "Secret"
 redirect: "http://localhost:8000/accounts/callback"
 authority: "https://login.microsoftonline.com/common"
 scopes:
