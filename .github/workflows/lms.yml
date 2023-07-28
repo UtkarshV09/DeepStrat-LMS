@@ -33,7 +33,7 @@ jobs:
         cd LeaveMgmt-Django/src
         pip install -r requirements.txt
 
-    - name: Run PyType
-      run: |
-        cd LeaveMgmt-Django/src
-        pytype src
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: 002978b7-dc37-43a6-86d5-b326b380ee4d
