@@ -32,3 +32,8 @@ jobs:
         python -m pip install --upgrade pip
         cd LeaveMgmt-Django/src
         pip install -r requirements.txt
+
+    - name: Run PyType
+      run: |
+        cd LeaveMgmt-Django/src
+        pytype src
