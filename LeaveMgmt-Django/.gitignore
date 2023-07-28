@@ -1,2 +1,4 @@
 env
 __pycache__
+.mypu_cache
+my_new_env
