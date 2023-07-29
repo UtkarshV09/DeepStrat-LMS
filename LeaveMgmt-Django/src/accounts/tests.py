@@ -7,7 +7,7 @@ from unittest.mock import patch, Mock, MagicMock
 from django.test import TestCase
 from django.http import HttpRequest
 import auth_helper
-from hrsuit.settings import AUTH_PASSWORD_VALIDATORS
+from django.contrib import auth
 
 
 # testing the UserAddForm
@@ -187,7 +187,7 @@ class TestLogoutView(TestCase):
         self.assertEqual(response.status_code, 302)  # Should redirect after logout
 
         # Check if the user is authenticated
-        user = AUTH_PASSWORD_VALIDATORS.get_user(self.client)
+        user = auth.get_user(self.client)
         self.assertFalse(user.is_authenticated)
 
     def test_logout_view_unauthenticated(self):
