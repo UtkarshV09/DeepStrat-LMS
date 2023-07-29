@@ -149,14 +149,6 @@ def employee_edit_data(request: HttpRequest, id: int) -> HttpResponse:
 
             instance.birthday = request.POST.get('birthday')
 
-            religion_id = request.POST.get('religion')
-            religion = Religion.objects.get(id=religion_id)
-            instance.religion = religion
-
-            nationality_id = request.POST.get('nationality')
-            nationality = Nationality.objects.get(id=nationality_id)
-            instance.nationality = nationality
-
             department_id = request.POST.get('department')
             department = Department.objects.get(id=department_id)
             instance.department = department
@@ -220,7 +212,6 @@ def dashboard_employee_info(request: HttpRequest, id: int) -> HttpResponse:
     dataset['employee'] = employee
     dataset['title'] = 'profile - {0}'.format(employee.get_full_name)
     return render(request, 'dashboard/employee_detail.html', dataset)
-
 
 
 # ---------------------LEAVE-------------------------------------------

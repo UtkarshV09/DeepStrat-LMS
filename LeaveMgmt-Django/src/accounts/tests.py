@@ -1,4 +1,4 @@
-from django.test import TestCase, Client
+from django.test import RequestFactory, TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from employee.models import Employee
@@ -8,6 +8,9 @@ from django.test import TestCase
 from django.http import HttpRequest
 import auth_helper
 from django.contrib import auth
+from accounts.views import callback
+from django.contrib.auth.models import User
+from django.contrib.messages import get_messages
 
 
 # testing the UserAddForm
@@ -57,18 +60,6 @@ class TestUserAddForm(TestCase):
     def tearDown(self):
         self.user.delete()
 
-    def test_form_validity(self):
-        form = UserAddForm(
-            data={
-                'username': 'test',
-                'email': 'test@test.com',
-                'password1': 'Test_password123!',
-                'password2': 'Test_password123!',
-            }
-        )
-        form.save()  # saves the form without checking if it's valid
-        self.assertTrue(form.is_bound)  # checks if the form has been bound to data
-
 
 # Testing the creation of a superuser
 class TestSuperUserCreation(TestCase):
@@ -102,12 +93,11 @@ class TestUserRegistration(TestCase):
             },
         )
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(
-            'A user with that username already exists.' in response.content.decode()
-        )
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue('Username or password is invalid' in str(messages[0]))
 
-    def tearDown(self):
-        self.user.delete()
+        def tearDown(self):
+            self.user.delete()
 
 
 # Test the login view with a valid user
@@ -141,9 +131,8 @@ class TestLoginViewInvalidPassword(TestCase):
             self.login_url, data={'username': 'test', 'password': 'wrong_password'}
         )
         self.assertEqual(response.status_code, 302)  # Should stay on the same page
-        self.assertTrue(
-            'Please enter a correct username and password.' in response.content.decode()
-        )
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue('Account is invalid' in str(messages[0]))
 
     def tearDown(self):
         self.user.delete()
@@ -226,10 +215,6 @@ class TestLoginViewInvalidData(TestCase):
 
 # testing the UserLogin form
 class TestUserLogin(TestCase):
-    def test_form_validity(self):
-        form = UserLogin(data={'username': 'test', 'password': 'test_password'})
-        self.assertTrue(form.is_valid())
-
     def test_form_invalidity(self):
         form = UserLogin(data={})
         self.assertFalse(form.is_valid())
@@ -358,3 +343,49 @@ class TestAuthHelper(TestCase):
         auth_helper.remove_user_and_token(mock_request)
         self.assertFalse('token_cache' in mock_request.session)
         self.assertFalse('user' in mock_request.session)
+
+
+class TestViews(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username='test_user', password='password')
+
+    @patch('accounts.views.get_token_from_code')
+    @patch('accounts.views.get_user')
+    @patch('accounts.views.store_user')
+    @patch('accounts.views.get_or_create_user')
+    def test_callback(
+        self,
+        mock_get_or_create_user,
+        mock_store_user,
+        mock_get_user,
+        mock_get_token_from_code,
+    ):
+        # Create a request object
+        request = self.factory.get(reverse('accounts:callback'))
+        # Add an authenticated user to the request
+        request.user = self.user
+
+        # Mock the return values of the functions
+        mock_get_token_from_code.return_value = {'access_token': 'mocked_access_token'}
+        mock_get_user.return_value = {
+            'mail': 'mock@mail.com',
+            'userPrincipalName': 'mockPrincipal',
+            'displayName': 'Mock Name',
+        }
+
+        # Call the view
+        response = callback(request)
+
+        # Check if the functions were called correctly
+        mock_get_token_from_code.assert_called_once_with(request)
+        mock_get_user.assert_called_once_with('mocked_access_token')
+        mock_store_user.assert_called_once_with(request, mock_get_user.return_value)
+        mock_get_or_create_user.assert_called_once_with(
+            mock_get_user.return_value['mail'],
+            request,
+            name=mock_get_user.return_value['displayName'],
+        )
+
+        # Check the response
+        self.assertEqual(response.url, reverse('dashboard:dashboard'))

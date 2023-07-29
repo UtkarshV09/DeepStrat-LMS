@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from datetime import date, timedelta
-from leave.models import Leave
+from leave.models import SICK, Leave
 from leave.forms import LeaveCreationForm
 import datetime
 import unittest
@@ -85,7 +85,7 @@ class LeaveCreationFormTest(TestCase):
         form_data = {
             'startdate': datetime.date.today() + datetime.timedelta(days=1),
             'enddate': datetime.date.today() + datetime.timedelta(days=5),
-            'leavetype': 'Sick Leave',
+            'leavetype': SICK,  # use the actual value from LEAVE_TYPE
             'reason': 'Medical appointment',
         }
         form = LeaveCreationForm(data=form_data)

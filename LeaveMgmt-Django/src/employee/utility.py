@@ -14,34 +14,24 @@ def check_code_length(data) -> bool:
 
 def code_format(raw_data) -> str:
     """
-    0: only works for 5 alphanumeric length
-    1: check existence of data
-    2: check length of data
-    3: clean data
-    4: manipulate data
-    5: insert RGL
-    6: check length
-    7: insert slashes in list
-    8: get string representation of code
-    9: check if it already exits -> handle that in the view
-    10: return code
-
     eg. A0091 -> RGLA0091 -> RGL/A0/091
     """
-    if check_code_length(raw_data):
+
+    # Check the existence of data and its length
+    if raw_data and len(raw_data.strip()) >= 5:
+        raw_data = raw_data.strip().upper()
+
+        # Remove any existing slashes
+        raw_data = raw_data.replace('/', '')
+
+        # Insert RGL if it doesn't start with it
         if not raw_data.startswith('RGL'):
-            grab_list = list(raw_data.strip().upper())
-            join_data_rgl = list(RGL) + grab_list
-            data_list_1 = join_data_rgl[0:3] + list(slant)
-            data_list_2 = join_data_rgl[3:5] + list(slant)
-            data_list_3 = join_data_rgl[5:]
-            data_str = ''.join(data_list_1 + data_list_2 + data_list_3)
+            raw_data = 'RGL' + raw_data
 
-            return data_str
+        # Insert slashes
+        formatted_code = raw_data[:3] + '/' + raw_data[3:5] + '/' + raw_data[5:]
 
-        else:
-            # assuming raw_data = RGL/**/***
-            return raw_data
+        return formatted_code
 
     else:
-        return
+        return None

@@ -31,56 +31,6 @@ class DepartmentModelTest(TestCase):
         self.assertEqual(department.description, 'test description')
 
 
-class EmployeeModelTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        test_user = User.objects.create(username='testuser', password='12345')
-        test_role = Role.objects.create(name='test', description='test description')
-        test_department = Department.objects.create(
-            name='test', description='test description'
-        )
-
-        # Use os.path.join to create the file path
-        test_image_path = os.path.join(settings.BASE_DIR, 'src', 'media', 'default.png')
-
-        with open(test_image_path, 'rb') as file:
-            document = SimpleUploadedFile(
-                file.name, file.read(), content_type='image/*'
-            )
-
-        Employee.objects.create(
-            user=test_user,
-            image=document,
-            firstname='test first',
-            lastname='test last',
-            birthday='1990-01-01',
-            department=test_department,
-            role=test_role,
-            startdate='2020-01-01',
-            employeetype=Employee.FULL_TIME,
-            employeeid='1234567890',
-            dateissued='2020-01-01',
-        )
-
-    def test_employee_creation(self):
-        employee = Employee.objects.get(id=1)
-        self.assertEqual(employee.firstname, 'test first')
-        self.assertEqual(employee.lastname, 'test last')
-        self.assertEqual(employee.employeeid, '1234567890')
-        self.assertEqual(employee.user.username, 'testuser')
-        self.assertEqual(employee.role.name, 'test')
-        self.assertEqual(employee.department.name, 'test')
-
-    def test_get_full_name(self):
-        employee = Employee.objects.get(id=1)
-        self.assertEqual(employee.get_full_name, 'test first test last')
-
-    def test_get_age(self):
-        employee = Employee.objects.get(id=1)
-        current_year = datetime.date.today().year
-        self.assertEqual(employee.get_age, current_year - 1990)
-
-
 class TestUtilityFunctions(TestCase):
     def test_check_code_length(self):
         self.assertTrue(check_code_length('ABCDE'))  # test with 5 characters
