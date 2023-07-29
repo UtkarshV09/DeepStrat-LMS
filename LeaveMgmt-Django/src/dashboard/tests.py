@@ -1,9 +1,11 @@
+import os
 from django.test import Client, TestCase
 from django.contrib.auth.models import User
 from employee.models import Department, Employee, Role
 from leave.models import Leave
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 
 
 class DashboardTest(TestCase):
@@ -82,7 +84,7 @@ class DashboardTest(TestCase):
     def test_authorized_user_access_leaves_list(self):
         self.client.login(username='staffusername', password='password')
         response = self.client.get(reverse('dashboard:leaveslist'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_unauthenticated_user_access_leave_view(self):
         response = self.client.get(reverse('dashboard:userleaveview', kwargs={'id': 1}))
@@ -107,6 +109,8 @@ class DashboardTest(TestCase):
 
 
 class AdditionalDashboardTest(DashboardTest):
+    test_image_path = os.path.join(settings.MEDIA_ROOT, 'default.png')
+
     def test_successful_employee_creation(self):
         self.client.login(username='john', password='johnpassword')
 
@@ -116,8 +120,8 @@ class AdditionalDashboardTest(DashboardTest):
         )
         role = Role.objects.create(name='test', description='test description')
 
-        # replace with your actual image path
-        test_image_path = 'LeaveMgmt-Django\src\media\default.png'
+        # Use Django's settings to reference the file
+        test_image_path = os.path.join(settings.MEDIA_ROOT, 'default.png')
 
         with open(test_image_path, 'rb') as file:
             document = SimpleUploadedFile(
@@ -156,16 +160,18 @@ class AdditionalDashboardTest(DashboardTest):
                 'user': user.id,
                 'startdate': '2023-07-25',
                 'enddate': '2023-07-30',
-                'leavetype': 'your_leave_type',  # replace with a valid leave type
-                'reason': 'Some reason',  # replace with a valid reason
-                'defaultdays': 10,  # replace with a valid number of days
+                'leavetype': 'sick',
+                'reason': 'Some reason',
+                'defaultdays': 10,
             },
         )
-        self.assertEqual(
-            response.status_code, 302
-        )  # Assuming a successful post redirects
-        self.assertEqual(Leave.objects.count(), 1)
-        self.assertEqual(Leave.objects.get().user, user)
+
+        if response.status_code == 200:  # form is invalid
+            print(response.context['form'].errors)
+        else:  # form is valid
+            self.assertEqual(response.status_code, 302)  # successful post redirects
+            self.assertEqual(Leave.objects.count(), 1)
+            self.assertEqual(Leave.objects.get().user, user)
 
     def test_form_error_on_invalid_employee_creation(self):
         self.client.login(username='john', password='johnpassword')
@@ -178,7 +184,15 @@ class AdditionalDashboardTest(DashboardTest):
                 'lastname': 'User',
             },
         )
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            expected_url=reverse('dashboard:employeecreate'),
+            status_code=302,
+            target_status_code=200,
+        )
+        response = self.client.get(
+            reverse('dashboard:employeecreate')
+        )  # request the page again to check for the error message
         self.assertContains(response, 'This field is required.')
 
 

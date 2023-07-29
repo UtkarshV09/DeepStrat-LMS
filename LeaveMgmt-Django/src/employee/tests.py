@@ -5,6 +5,8 @@ from employee.models import Role, Department, Employee
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from employee.utility import check_code_length, code_format
+from django.conf import settings
+import os
 
 
 class RoleModelTest(TestCase):
@@ -38,7 +40,8 @@ class EmployeeModelTest(TestCase):
             name='test', description='test description'
         )
 
-        test_image_path = 'LeaveMgmt-Django\src\media\default.png'  # Please replace it with your actual test image path
+        # Use os.path.join to create the file path
+        test_image_path = os.path.join(settings.BASE_DIR, 'src', 'media', 'default.png')
 
         with open(test_image_path, 'rb') as file:
             document = SimpleUploadedFile(
