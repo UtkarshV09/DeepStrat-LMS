@@ -38,7 +38,7 @@ class EmployeeModelTest(TestCase):
             name='test', description='test description'
         )
 
-        test_image_path = 'path_to_your_test_image'  # Please replace it with your actual test image path
+        test_image_path = 'LeaveMgmt-Django\src\media\default.png'  # Please replace it with your actual test image path
 
         with open(test_image_path, 'rb') as file:
             document = SimpleUploadedFile(
