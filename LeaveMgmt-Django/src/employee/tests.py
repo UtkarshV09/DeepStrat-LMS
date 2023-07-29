@@ -78,7 +78,7 @@ class EmployeeModelTest(TestCase):
         self.assertEqual(employee.get_age, current_year - 1990)
 
 
-class TestUtilityFunctions(unittest.TestCase):
+class TestUtilityFunctions(TestCase):
     def test_check_code_length(self):
         self.assertTrue(check_code_length('ABCDE'))  # test with 5 characters
         self.assertTrue(check_code_length('ABCDEF'))  # test with more than 5 characters

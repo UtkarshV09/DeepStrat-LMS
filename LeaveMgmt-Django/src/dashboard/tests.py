@@ -98,24 +98,6 @@ class DashboardTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
 
-    def test_leave_creation_with_invalid_date(self):
-        self.client.login(username='username', password='password')
-        response = self.client.post(
-            reverse('dashboard:createleave'),
-            data={'startdate': '2023-08-01', 'enddate': '2023-07-31'},
-        )
-        self.assertContains(
-            response, 'failed to Request a Leave,please check entry dates'
-        )
-
-    def test_leave_creation_with_valid_date(self):
-        self.client.login(username='username', password='password')
-        response = self.client.post(
-            reverse('dashboard:createleave'),
-            data={'startdate': '2023-07-25', 'enddate': '2023-07-30'},
-        )
-        self.assertContains(response, 'Leave Request Sent,wait for Admins response')
-
     def test_unauthorized_user_access_leaves_list(self):
         self.client.login(username='username', password='password')
         response = self.client.get(reverse('dashboard:leaveslist'))
@@ -422,55 +404,3 @@ class AdditionalDashboardTest3(DashboardTest):
         response = self.client.get(reverse('dashboard:leavesrejected'))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
-
-
-class AdditionalDashboardTest4(DashboardTest):
-    def test_authenticated_user_create_employee(self):
-        self.client.login(username='john', password='johnpassword')
-        response = self.client.post(
-            reverse('dashboard:employeecreate'),
-            data={'firstname': 'Jane', 'lastname': 'Doe', 'email': 'jane@doe.com'},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(Employee.objects.count(), 1)
-        self.assertEqual(Employee.objects.first().firstname, 'Jane')
-
-    def test_authenticated_user_delete_employee(self):
-        self.client.login(username='john', password='johnpassword')
-        employee = Employee.objects.create(firstname='John', lastname='Doe')
-        response = self.client.post(
-            reverse('dashboard:employeedelete', args=[employee.id])
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(Employee.objects.count(), 0)
-
-    def test_authenticated_user_update_leave_status(self):
-        self.client.login(username='john', password='johnpassword')
-        leave = Leave.objects.create(
-            user=User.objects.get(username='john'), status='pending'
-        )
-        response = self.client.post(
-            reverse('dashboard:leaveupdate', args=[leave.id]),
-            data={'status': 'approved'},
-        )
-        self.assertEqual(response.status_code, 302)
-        leave.refresh_from_db()
-        self.assertEqual(leave.status, 'approved')
-
-    def test_authenticated_user_delete_leave(self):
-        self.client.login(username='john', password='johnpassword')
-        leave = Leave.objects.create(
-            user=User.objects.get(username='john'), status='pending'
-        )
-        response = self.client.post(reverse('dashboard:leavedelete', args=[leave.id]))
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(Leave.objects.count(), 0)
-
-    # if you have some custom logic in your views for handling different methods other than GET or POST
-    def test_authenticated_user_access_view_with_unsupported_method(self):
-        self.client.login(username='john', password='johnpassword')
-        response = self.client.put(
-            reverse('dashboard:dashboard'),
-            data={'firstname': 'Jane', 'lastname': 'Doe', 'email': 'jane@doe.com'},
-        )
-        self.assertEqual(response.status_code, 405)

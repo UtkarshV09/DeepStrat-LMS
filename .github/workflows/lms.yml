@@ -35,6 +35,7 @@ jobs:
 
     - name: Run tests with coverage
       run: coverage run manage.py test
+      working-directory: LeaveMgmt-Django/src
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3

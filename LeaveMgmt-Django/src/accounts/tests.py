@@ -2,14 +2,10 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from employee.models import Employee
-from .forms import UserAddForm, UserLogin
-from .views import register_user_view, login_view
-from django.contrib.auth.models import AnonymousUser
+from accounts.forms import UserAddForm, UserLogin
 from unittest.mock import patch, Mock, MagicMock
 from django.test import TestCase
 from django.http import HttpRequest
-import yaml
-import msal
 import auth_helper
 
 
