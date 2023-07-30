@@ -185,7 +185,7 @@ class Employee(models.Model):
         elif othername:
             fullname = firstname + ' ' + lastname + ' ' + othername
             return fullname
-        return
+        return fullname
 
     # Compute the age of the employee
     @property
@@ -194,12 +194,12 @@ class Employee(models.Model):
         dateofbirth_year = self.birthday.year
         if dateofbirth_year:
             return current_year - dateofbirth_year
-        return
+        return 0
 
     # Check if the employee can apply for leave (to be implemented)
     @property
     def can_apply_leave(self):
-        pass
+        return None
 
     # Override the save method to process the employee ID in a specific way before saving
 

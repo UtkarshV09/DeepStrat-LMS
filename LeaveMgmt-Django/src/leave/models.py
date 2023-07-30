@@ -101,7 +101,7 @@ class Leave(models.Model):
         startdate = self.startdate
         enddate = self.enddate
         if startdate > enddate:
-            return
+            return 0
         dates = enddate - startdate
         return dates.days
 
@@ -147,5 +147,5 @@ class Leave(models.Model):
             self.save()
 
     @property
-    def is_rejected(self) -> any:
+    def is_rejected(self) -> bool:
         return self.status == 'rejected'

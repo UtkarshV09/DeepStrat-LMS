@@ -1,6 +1,7 @@
 from django import forms
 from .models import Leave
 import datetime
+from typing import Any
 
 
 # Define a form for Leave creation
@@ -26,7 +27,7 @@ class LeaveCreationForm(forms.ModelForm):
         ]
 
     # Clean (validate) the 'enddate' field
-    def clean_enddate(self) -> any:
+    def clean_enddate(self) -> Any:
         # Grab the 'enddate' and 'startdate' fields from the cleaned data
         enddate = self.cleaned_data['enddate']
         startdate = self.cleaned_data['startdate']

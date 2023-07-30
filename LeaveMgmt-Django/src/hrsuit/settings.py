@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import List
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -14,7 +15,7 @@ SECRET_KEY = '_1Lp;q}WqoD5DOcLt8.j7p9W!zAe<s^c(Alt#ZEw:<8DaTEh\('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: List[str] = []
 
 
 # Email Settings

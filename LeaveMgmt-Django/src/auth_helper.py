@@ -1,5 +1,5 @@
 import yaml
-import msal
+import msal  # type: ignore
 import os
 import time
 from typing import Any, Dict
@@ -91,6 +91,7 @@ def get_token(request: HttpRequest) -> str:
         save_cache(request, cache)
 
         return result['access_token']
+    return 'None'
 
 
 def remove_user_and_token(request: HttpRequest) -> None:

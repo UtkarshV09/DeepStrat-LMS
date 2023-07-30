@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.test import RequestFactory, TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+import yaml
 from employee.models import Employee
 from accounts.forms import UserAddForm, UserLogin
 from unittest.mock import patch, Mock, MagicMock
@@ -316,24 +318,31 @@ class TestAuthHelper(TestCase):
     @patch('auth_helper.get_msal_app')
     @patch('auth_helper.load_cache')
     @patch('auth_helper.save_cache')
-    @patch('auth_helper.msal.ConfidentialClientApplication')
-    def test_get_token(
-        self, mock_msal_app, mock_save_cache, mock_load_cache, mock_get_msal_app
-    ):
+    def test_get_token(self, mock_save_cache, mock_load_cache, mock_get_msal_app):
         mock_request = Mock(spec=HttpRequest)
 
-        # Make get_accounts return a list with a mock account
-        mock_msal_app.return_value.get_accounts.return_value = [Mock()]
+        # Load the oauth_settings.yml file
+        stream = open('oauth_settings.yml', 'r')
+        settings = yaml.load(stream, yaml.SafeLoader)
 
-        # Setup return value for acquire_token_silent
-        mock_msal_app.return_value.acquire_token_silent.return_value = {
+        # Mock the ConfidentialClientApplication instance
+        mock_msal_app_instance = Mock()
+        mock_msal_app_instance.get_accounts.return_value = [Mock()]
+        mock_msal_app_instance.acquire_token_silent.return_value = {
             'access_token': 'mocked_access_token'
         }
 
+        # Setup get_msal_app to return mock_msal_app_instance
+        mock_get_msal_app.return_value = mock_msal_app_instance
+
         result = auth_helper.get_token(mock_request)
 
-        # Now acquire_token_silent should have been called
-        mock_msal_app.return_value.acquire_token_silent.assert_called_once()
+        # Now get_accounts and acquire_token_silent should have been called
+        mock_msal_app_instance.get_accounts.assert_called_once()
+        mock_msal_app_instance.acquire_token_silent.assert_called_once_with(
+            settings['scopes'],
+            account=mock_msal_app_instance.get_accounts.return_value[0],
+        )
 
         self.assertEqual(result, 'mocked_access_token')
 

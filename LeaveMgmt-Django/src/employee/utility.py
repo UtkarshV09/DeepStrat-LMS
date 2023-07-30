@@ -34,4 +34,4 @@ def code_format(raw_data) -> str:
         return formatted_code
 
     else:
-        return None
+        return ''
