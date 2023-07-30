@@ -41,5 +41,3 @@ jobs:
       uses: codecov/codecov-action@v3
       env:
         CODECOV_TOKEN: 002978b7-dc37-43a6-86d5-b326b380ee4d
-      with:
-        root_dir: /home/runner/work/DeepStrat-LMS/LeaveMgmt-Django/src
