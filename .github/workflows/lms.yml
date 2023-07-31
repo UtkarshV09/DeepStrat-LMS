@@ -43,9 +43,9 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         file: ./LeaveMgmt-Django/coverage.xml
-        token: 002978b7-dc37-43a6-86d5-b326b380ee4d
+        token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       env:
-        CODECOV_TOKEN: 002978b7-dc37-43a6-86d5-b326b380ee4d
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
