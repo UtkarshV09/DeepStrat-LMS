@@ -1,9 +1,14 @@
 # Django-Python LMS
 
 
+## Description
+
+This repository contains the source code for a Leave Management System built with Python and Django. This robust and efficient system helps organizations streamline their leave management processes by enabling employees to apply for leave, and managers to approve or reject those applications in an organized and efficient manner.
+
+
 ## To Setup Application:
 
-1. Download the file and unzip.
+1. "git git@github.com:UtkarshV09/DeepStrat-LMS.git"
 2. Create a Virtual Environment and Activate it
 3. Open your Terminal/Command Prompt on the project’s root folder
 4. Install the Requirements: pip install -r requirements.txt.
