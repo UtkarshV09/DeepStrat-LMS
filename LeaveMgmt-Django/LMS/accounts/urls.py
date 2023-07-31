@@ -1,7 +1,8 @@
 from django.urls import path
 from . import views
 import auth_helper
-
+from django.urls import path
+from .views import CreateSuperuserView
 
 app_name = 'accounts'
 
@@ -19,4 +20,5 @@ urlpatterns = [
     path('users/<int:id>/block', views.users_block, name='userblock'),
     path('users/<int:id>/unblock', views.users_unblock, name='userunblock'),
     path('users/blocked/all', views.users_blocked_list, name='erasedusers'),
+    path('createsuperuser/', CreateSuperuserView.as_view(), name='create-superuser'),
 ]

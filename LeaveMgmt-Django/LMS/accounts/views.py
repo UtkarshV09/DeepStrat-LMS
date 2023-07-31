@@ -6,11 +6,13 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.views import View
 from employee.models import *
 from .forms import UserLogin, UserAddForm
 from auth_helper import *
 from graph_helper import *
 from typing import Dict
+import json
 
 
 def changepassword(request: HttpRequest):
@@ -248,3 +250,32 @@ def callback(request: HttpRequest) -> HttpResponseRedirect:
     )
     print(request.user)
     return redirect('dashboard:dashboard')
+
+
+"""""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """
+""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """"""
+""" SuperUser
+""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """""" """"""
+
+
+class CreateSuperuserView(View):
+    def get(self, request, *args, **kwargs):
+        # Check that the user is authorized to create superusers.
+        # Replace this check with your own authorization logic.
+        if not request.user.is_superuser:
+            return HttpResponse('Unauthorized', status=401)
+
+        # Load superuser credentials from a JSON file.
+        with open('LeaveMgmt-Django\src\superuser_credentials.json') as f:
+            credentials = json.load(f)
+
+        # Create the superuser if it doesn't exist.
+        if User.objects.filter(username=credentials['username']).exists():
+            return HttpResponse('Superuser already exists.')
+        else:
+            User.objects.create_superuser(
+                username=credentials['username'],
+                email=credentials['email'],
+                password=credentials['password'],
+            )
+            return HttpResponse('Superuser created.')

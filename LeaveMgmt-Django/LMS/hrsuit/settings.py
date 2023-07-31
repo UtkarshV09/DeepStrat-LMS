@@ -29,6 +29,11 @@ EMAIL_USE_TLS = True
 # Application definition
 
 INSTALLED_APPS = [
+    'dashboard',
+    'accounts',
+    'employee',
+    'leave',
+    'tests',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,16 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    # INSTALLED APPS
     'crispy_forms',
     'crispy_bootstrap4',
     'phonenumber_field',
     'widget_tweaks',
-    # PROJECT APPS
-    'dashboard',
-    'accounts',
-    'employee',
-    'leave',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
