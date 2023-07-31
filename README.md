@@ -2,9 +2,6 @@
 
 
 ## To Setup Application:
-1.
-
-# To Setup Azure SSO funtionality:
 
 1. Download the file and unzip.
 2. Create a Virtual Environment and Activate it
@@ -16,7 +13,7 @@
 8. To create a superusr vist [link](https://docs.djangoproject.com/en/1.8/intro/tutorial02/)
 
 
-# To Setup Azure SSO funtionality:
+## To Setup Azure SSO funtionality:
 
 1. Visit: [link](https://aad.portal.azure.com/)
 2. Now login with your account or create an Azure account
