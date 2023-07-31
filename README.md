@@ -1,3 +1,10 @@
+[![codecov](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS/branch/main/graph/badge.svg?token=WMJ5R8AHJT)](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS)
+
+
+![pylint Score](https://mperlet.github.io/pybadge/badges/5.92.svg)
+
+
+
 # Django-Python LMS
 
 
@@ -28,14 +35,3 @@ This repository contains the source code for a Leave Management System built wit
 6. Now open Certificates & secrets and create a new Client Secrets
 7. Save the Client Secret "Value" on the notepad
 8. Now open the IDE and under src/oauth_settings.yml . Setup Application (client) ID and Client Secret "Value".
-
-
-
-
-
-
-
-[![codecov](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS/branch/main/graph/badge.svg?token=WMJ5R8AHJT)](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS)
-
-
-![pylint Score](https://mperlet.github.io/pybadge/badges/5.92.svg)
