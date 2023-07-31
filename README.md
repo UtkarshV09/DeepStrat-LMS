@@ -48,3 +48,6 @@ python manage.py runserver
 
 
 [![codecov](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS/branch/main/graph/badge.svg?token=WMJ5R8AHJT)](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS)
+
+
+![pylint Score](https://mperlet.github.io/pybadge/badges/8.49.svg)
