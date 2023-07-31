@@ -47,4 +47,4 @@ python manage.py runserver
 
 
 
-[![codecov](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS/branch/main/graph/badge.svg?token=002978b7-dc37-43a6-86d5-b326b380ee4d)](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS)
+[![codecov](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS/branch/main/graph/badge.svg?token=WMJ5R8AHJT)](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS)
