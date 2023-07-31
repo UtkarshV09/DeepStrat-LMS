@@ -8,7 +8,7 @@ This repository contains the source code for a Leave Management System built wit
 
 ## To Setup Application:
 
-1. Git Clone [link](https://github.com/UtkarshV09/DeepStrat-LMS)
+1. Git Clone
 2. Create a Virtual Environment and Activate it
 3. Open your Terminal/Command Prompt on the project’s root folder
 4. Install the Requirements: pip install -r requirements.txt.
