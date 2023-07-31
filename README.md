@@ -2,6 +2,8 @@
 
 ![workflow badge](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/lms.yml/badge.svg)
 
+![Black](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/lms.yml/badge.svg)
+
 ![pylint Score](https://mperlet.github.io/pybadge/badges/5.92.svg)
 
 

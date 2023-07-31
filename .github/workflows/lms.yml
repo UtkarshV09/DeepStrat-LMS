@@ -33,6 +33,12 @@ jobs:
         cd LeaveMgmt-Django/LMS
         pip install -r requirements.txt
 
+    - name: Install Black
+      run: pip install black
+
+    - name: Check code formatting
+      run: black --check .
+
     - name: Run tests with coverage
       run: |
         coverage run manage.py test
