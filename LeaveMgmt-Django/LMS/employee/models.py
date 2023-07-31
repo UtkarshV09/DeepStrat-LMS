@@ -16,14 +16,14 @@ class Role(models.Model):
     description = models.CharField(max_length=125, null=True, blank=True)
 
     # Fields for tracking the creation and update times of each instance.
-    created = models.DateTimeField(verbose_name=_('Created'), auto_now_add=True)
-    updated = models.DateTimeField(verbose_name=_('Updated'), auto_now=True)
+    created = models.DateTimeField(verbose_name=_("Created"), auto_now_add=True)
+    updated = models.DateTimeField(verbose_name=_("Updated"), auto_now=True)
 
     # Meta class for additional model options
     class Meta:
-        verbose_name = _('Role')
-        verbose_name_plural = _('Roles')
-        ordering = ['name', 'created']
+        verbose_name = _("Role")
+        verbose_name_plural = _("Roles")
+        ordering = ["name", "created"]
 
     # String representation of each instance of this model
     def __str__(self) -> str:
@@ -36,14 +36,14 @@ class Department(models.Model):
     description = models.CharField(max_length=125, null=True, blank=True)
 
     # Fields for tracking the creation and update times of each instance.
-    created = models.DateTimeField(verbose_name=_('Created'), auto_now_add=True)
-    updated = models.DateTimeField(verbose_name=_('Updated'), auto_now=True)
+    created = models.DateTimeField(verbose_name=_("Created"), auto_now_add=True)
+    updated = models.DateTimeField(verbose_name=_("Updated"), auto_now=True)
 
     # Meta class for additional model options
     class Meta:
-        verbose_name = _('Department')
-        verbose_name_plural = _('Departments')
-        ordering = ['name', 'created']
+        verbose_name = _("Department")
+        verbose_name_plural = _("Departments")
+        ordering = ["name", "created"]
 
     # String representation of each instance of this model
     def __str__(self) -> str:
@@ -52,81 +52,81 @@ class Department(models.Model):
 
 # Define the Employee mode
 class Employee(models.Model):
-    MALE = 'male'
-    FEMALE = 'female'
-    OTHER = 'other'
-    NOT_KNOWN = 'Not Known'
+    MALE = "male"
+    FEMALE = "female"
+    OTHER = "other"
+    NOT_KNOWN = "Not Known"
 
     GENDER = (
-        (MALE, 'Male'),
-        (FEMALE, 'Female'),
-        (OTHER, 'Other'),
-        (NOT_KNOWN, 'Not Known'),
+        (MALE, "Male"),
+        (FEMALE, "Female"),
+        (OTHER, "Other"),
+        (NOT_KNOWN, "Not Known"),
     )
 
-    MR = 'Mr'
-    MRS = 'Mrs'
-    MSS = 'Mss'
-    DR = 'Dr'
-    SIR = 'Sir'
-    MADAM = 'Madam'
+    MR = "Mr"
+    MRS = "Mrs"
+    MSS = "Mss"
+    DR = "Dr"
+    SIR = "Sir"
+    MADAM = "Madam"
 
     TITLE = (
-        (MR, 'Mr'),
-        (MRS, 'Mrs'),
-        (MSS, 'Mss'),
-        (DR, 'Dr'),
-        (SIR, 'Sir'),
-        (MADAM, 'Madam'),
+        (MR, "Mr"),
+        (MRS, "Mrs"),
+        (MSS, "Mss"),
+        (DR, "Dr"),
+        (SIR, "Sir"),
+        (MADAM, "Madam"),
     )
 
-    FULL_TIME = 'Full-Time'
-    PART_TIME = 'Part-Time'
-    CONTRACT = 'Contract'
-    INTERN = 'Intern'
+    FULL_TIME = "Full-Time"
+    PART_TIME = "Part-Time"
+    CONTRACT = "Contract"
+    INTERN = "Intern"
 
     EMPLOYEETYPE = (
-        (FULL_TIME, 'Full-Time'),
-        (PART_TIME, 'Part-Time'),
-        (CONTRACT, 'Contract'),
-        (INTERN, 'Intern'),
+        (FULL_TIME, "Full-Time"),
+        (PART_TIME, "Part-Time"),
+        (CONTRACT, "Contract"),
+        (INTERN, "Intern"),
     )
 
     # PERSONAL DATA
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 
     image = models.FileField(
-        _('Profile Image'),
-        upload_to='profiles',
-        default='default.png',
+        _("Profile Image"),
+        upload_to="profiles",
+        default="default.png",
         blank=True,
         null=True,
-        help_text='upload image size less than 2.0MB',
+        help_text="upload image size less than 2.0MB",
     )  # work on path username-date/image
     firstname = models.CharField(
-        _('Firstname'), max_length=125, null=False, blank=False
+        _("Firstname"), max_length=125, null=False, blank=False
     )
-    lastname = models.CharField(_('Lastname'), max_length=125, null=False, blank=False)
+    lastname = models.CharField(_("Lastname"), max_length=125, null=False, blank=False)
     othername = models.CharField(
-        _('Othername (optional)'), max_length=125, null=True, blank=True
+        _("Othername (optional)"), max_length=125, null=True, blank=True
     )
-    birthday = models.DateField(_('Birthday'), blank=False, null=False)
+    birthday = models.DateField(_("Birthday"), blank=False, null=False)
 
     department = models.ForeignKey(
         Department,
-        verbose_name=_('Department'),
+        verbose_name=_("Department"),
         on_delete=models.SET_NULL,
         null=True,
         default=None,
     )
     role = models.ForeignKey(
-        Role, verbose_name=_('Role'), on_delete=models.SET_NULL, null=True, default=None
+        Role, verbose_name=_("Role"), on_delete=models.SET_NULL, null=True, default=None
     )
     startdate = models.DateField(
-        _('Employement Date'), help_text='date of employement', blank=False, null=True
+        _("Employement Date"), help_text="date of employement", blank=False, null=True
     )
     employeetype = models.CharField(
-        _('Employee Type'),
+        _("Employee Type"),
         max_length=15,
         default=FULL_TIME,
         choices=EMPLOYEETYPE,
@@ -134,38 +134,38 @@ class Employee(models.Model):
         null=True,
     )
     employeeid = models.CharField(
-        _('Employee ID Number'), max_length=10, null=True, blank=True
+        _("Employee ID Number"), max_length=10, null=True, blank=True
     )
 
     dateissued = models.DateField(
-        _('Date Issued'), help_text='date staff id was issued', blank=True, null=True
+        _("Date Issued"), help_text="date staff id was issued", blank=True, null=True
     )
 
     # app related
     is_blocked = models.BooleanField(
-        _('Is Blocked'),
-        help_text='button to toggle employee block and unblock',
+        _("Is Blocked"),
+        help_text="button to toggle employee block and unblock",
         default=False,
     )
     is_deleted = models.BooleanField(
-        _('Is Deleted'),
-        help_text='button to toggle employee deleted and undelete',
+        _("Is Deleted"),
+        help_text="button to toggle employee deleted and undelete",
         default=False,
     )
 
     created = models.DateTimeField(
-        verbose_name=_('Created'), auto_now_add=True, null=True
+        verbose_name=_("Created"), auto_now_add=True, null=True
     )
-    updated = models.DateTimeField(verbose_name=_('Updated'), auto_now=True, null=True)
+    updated = models.DateTimeField(verbose_name=_("Updated"), auto_now=True, null=True)
 
     # PLUG MANAGERS
     objects = EmployeeManager()
 
     # Meta class for additional model options
     class Meta:
-        verbose_name = _('Employee')
-        verbose_name_plural = _('Employees')
-        ordering = ['-created']
+        verbose_name = _("Employee")
+        verbose_name_plural = _("Employees")
+        ordering = ["-created"]
 
     # String representation of each instance of this model
     def __str__(self) -> str:
@@ -174,16 +174,16 @@ class Employee(models.Model):
     # Compute the full name of the employee
     @property
     def get_full_name(self) -> str:
-        fullname = ''
+        fullname = ""
         firstname = self.firstname
         lastname = self.lastname
         othername = self.othername
 
         if (firstname and lastname) or othername is None:
-            fullname = firstname + ' ' + lastname
+            fullname = firstname + " " + lastname
             return fullname
         elif othername:
-            fullname = firstname + ' ' + lastname + ' ' + othername
+            fullname = firstname + " " + lastname + " " + othername
             return fullname
         return fullname
 

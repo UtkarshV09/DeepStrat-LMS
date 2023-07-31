@@ -5,20 +5,20 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 class Command(BaseCommand):
-    help = 'Setup data from JSON file'
+    help = "Setup data from JSON file"
 
     def add_arguments(self, parser):
-        parser.add_argument('json_file', type=str, help='Indicates the JSON file')
+        parser.add_argument("json_file", type=str, help="Indicates the JSON file")
 
     def handle(self, *args, **options):
-        with open(options['json_file']) as f:
+        with open(options["json_file"]) as f:
             data = json.load(f)
 
-            root_user_data = data['root_user']
+            root_user_data = data["root_user"]
 
             # Check if root user already exists
             try:
-                user = User.objects.get(username=root_user_data['username'])
+                user = User.objects.get(username=root_user_data["username"])
                 self.stdout.write(
                     self.style.SUCCESS(
                         f"User '{root_user_data['username']}' already exists."
@@ -27,15 +27,15 @@ class Command(BaseCommand):
             except ObjectDoesNotExist:
                 # If user doesn't exist, create a new one
                 User.objects.create_superuser(
-                    username=root_user_data['username'],
-                    password=root_user_data['password'],
-                    email=root_user_data['email'],
+                    username=root_user_data["username"],
+                    password=root_user_data["password"],
+                    email=root_user_data["email"],
                 )
                 self.stdout.write(
                     self.style.SUCCESS(f"User '{root_user_data['username']}' created.")
                 )
 
             # setup other data
-            setup_data = data['setup_data']
+            setup_data = data["setup_data"]
 
-            self.stdout.write(self.style.SUCCESS(f'Setup data: {setup_data}'))
+            self.stdout.write(self.style.SUCCESS(f"Setup data: {setup_data}"))

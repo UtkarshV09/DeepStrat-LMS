@@ -5,22 +5,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('leave', '0003_alter_leave_leavetype'),
+        ("leave", "0003_alter_leave_leavetype"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='leave',
-            name='leavetype',
+            model_name="leave",
+            name="leavetype",
             field=models.CharField(
                 choices=[
-                    ('sick', 'Sick Leave'),
-                    ('casual', 'Casual Leave'),
-                    ('emergency', 'Emergency Leave'),
-                    ('study', 'Study Leave'),
-                    ('maternity', 'Maternity Leave'),
+                    ("sick", "Sick Leave"),
+                    ("casual", "Casual Leave"),
+                    ("emergency", "Emergency Leave"),
+                    ("study", "Study Leave"),
+                    ("maternity", "Maternity Leave"),
                 ],
-                default='sick',
+                default="sick",
                 max_length=25,
                 null=True,
             ),

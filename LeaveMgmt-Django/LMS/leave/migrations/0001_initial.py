@@ -14,72 +14,72 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Leave',
+            name="Leave",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'startdate',
+                    "startdate",
                     models.DateField(
-                        help_text='leave start date is on ..',
+                        help_text="leave start date is on ..",
                         null=True,
-                        verbose_name='Start Date',
+                        verbose_name="Start Date",
                     ),
                 ),
                 (
-                    'enddate',
+                    "enddate",
                     models.DateField(
-                        help_text='coming back on ...',
+                        help_text="coming back on ...",
                         null=True,
-                        verbose_name='End Date',
+                        verbose_name="End Date",
                     ),
                 ),
                 (
-                    'leavetype',
+                    "leavetype",
                     models.CharField(
                         choices=[
-                            ('sick', 'Sick Leave'),
-                            ('casual', 'Casual Leave'),
-                            ('emergency', 'Emergency Leave'),
-                            ('study', 'Study Leave'),
+                            ("sick", "Sick Leave"),
+                            ("casual", "Casual Leave"),
+                            ("emergency", "Emergency Leave"),
+                            ("study", "Study Leave"),
                         ],
-                        default='sick',
+                        default="sick",
                         max_length=25,
                         null=True,
                     ),
                 ),
                 (
-                    'reason',
+                    "reason",
                     models.CharField(
                         blank=True,
-                        help_text='add additional information for leave',
+                        help_text="add additional information for leave",
                         max_length=255,
                         null=True,
-                        verbose_name='Reason for Leave',
+                        verbose_name="Reason for Leave",
                     ),
                 ),
                 (
-                    'defaultdays',
+                    "defaultdays",
                     models.PositiveIntegerField(
                         blank=True,
                         default=30,
                         null=True,
-                        verbose_name='Leave days per year counter',
+                        verbose_name="Leave days per year counter",
                     ),
                 ),
-                ('status', models.CharField(default='pending', max_length=12)),
-                ('is_approved', models.BooleanField(default=False)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('created', models.DateTimeField(auto_now_add=True)),
+                ("status", models.CharField(default="pending", max_length=12)),
+                ("is_approved", models.BooleanField(default=False)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("created", models.DateTimeField(auto_now_add=True)),
                 (
-                    'user',
+                    "user",
                     models.ForeignKey(
                         default=1,
                         on_delete=django.db.models.deletion.CASCADE,
@@ -88,9 +88,9 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                'verbose_name': 'Leave',
-                'verbose_name_plural': 'Leaves',
-                'ordering': ['-created'],
+                "verbose_name": "Leave",
+                "verbose_name_plural": "Leaves",
+                "ordering": ["-created"],
             },
         ),
     ]
