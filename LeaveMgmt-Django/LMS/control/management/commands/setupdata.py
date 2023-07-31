@@ -38,6 +38,4 @@ class Command(BaseCommand):
             # setup other data
             setup_data = data['setup_data']
 
-            # Here, you'll need to write the logic for setting up the rest of your data.
-            # For now, let's just print it out.
             self.stdout.write(self.style.SUCCESS(f'Setup data: {setup_data}'))
