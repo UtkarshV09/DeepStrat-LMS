@@ -58,7 +58,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     
     - name: Run Pylint
-    - uses: Silleellie/pylint-github-action@v1
+      uses: Silleellie/pylint-github-action@v1
       with:
         package-path: LMS
         python-version: 3.9.16
