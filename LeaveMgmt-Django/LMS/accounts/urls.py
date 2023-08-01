@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-import auth_helper
 from django.urls import path
 from .views import CreateSuperuserView
 

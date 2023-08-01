@@ -1,7 +1,5 @@
 import yaml
 import msal  # type: ignore
-import os
-import time
 from typing import Any, Dict
 from django.http import HttpRequest
 
