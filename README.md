@@ -1,5 +1,8 @@
 [![codecov](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS/branch/main/graph/badge.svg?token=WMJ5R8AHJT)](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS)   [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) 
 
+[![DeepSource](https://deepsource.io/gh/UtkarshV09/DeepStrat-LMS.svg)](https://deepsource.io/gh/UtkarshV09/DeepStrat-LMS/?ref=repository-badge)
+
+
 [![Pylint](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/lms.yml/badge.svg)](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/lms.yml)  ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/UtkarshV09/DeepStrat-LMS)
 
 [![pylint Score](https://mperlet.github.io/pybadge/badges/4.28.svg)](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/lms.yml)
