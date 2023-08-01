@@ -1,14 +1,11 @@
 import datetime
-import os
 from django.test import Client, TestCase
 from django.contrib.auth.models import User
-from employee.models import Department, Employee, Role
+from employee.models import Employee
 from leave.models import Leave
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.forms.models import model_to_dict
 
 
 class DashboardTest(TestCase):

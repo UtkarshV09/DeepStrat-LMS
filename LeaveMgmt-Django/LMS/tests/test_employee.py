@@ -1,12 +1,6 @@
-import datetime
-import unittest
 from django.test import TestCase
-from employee.models import Role, Department, Employee
-from django.contrib.auth.models import User
-from django.core.files.uploadedfile import SimpleUploadedFile
+from employee.models import Role, Department
 from employee.utility import check_code_length, code_format
-from django.conf import settings
-import os
 
 
 class RoleModelTest(TestCase):
