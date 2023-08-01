@@ -59,4 +59,4 @@ jobs:
     
     - name: Run Pylint
       run: |
-        pylint $(git ls-files '*.py') || true
+        pylint $(git ls-files '*.py') 
