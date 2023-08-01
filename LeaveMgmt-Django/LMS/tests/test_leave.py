@@ -4,6 +4,7 @@ from datetime import date, timedelta
 from leave.models import SICK, Leave
 from leave.forms import LeaveCreationForm
 import datetime
+import unittest
 
 
 class LeaveModelTest(TestCase):

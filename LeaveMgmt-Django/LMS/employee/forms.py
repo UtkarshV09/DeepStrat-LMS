@@ -1,5 +1,6 @@
 from django import forms
-from employee.models import Employee
+from employee.models import Role, Department, Employee
+from django.contrib.auth.models import User
 
 
 # EMPLoYEE
