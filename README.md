@@ -14,6 +14,7 @@
 
 ## Description
 
+
 This repository contains the source code for a Leave Management System built with Python and Django. This robust and efficient system helps organizations streamline their leave management processes by enabling employees to apply for leave, and managers to approve or reject those applications in an organized and efficient manner.
 
 
