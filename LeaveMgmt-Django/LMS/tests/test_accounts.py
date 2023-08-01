@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 import yaml
 from employee.models import Employee
-from accounts.forms import UserAddForm, UserLogin
+from accounts.forms import UserLogin
 from unittest.mock import patch, Mock, MagicMock
 from django.test import TestCase
 from django.http import HttpRequest
