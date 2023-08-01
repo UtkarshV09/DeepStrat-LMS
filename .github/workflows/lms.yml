@@ -60,5 +60,5 @@ jobs:
     - name: Run Pylint
     - uses: Silleellie/pylint-github-action@v1
       with:
-        package-path: src
-        python-version: 3.11
+        package-path: LMS
+        python-version: 3.9.16
