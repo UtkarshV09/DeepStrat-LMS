@@ -2,6 +2,7 @@
 
 [![Pylint](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/lms.yml/badge.svg)](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/lms.yml)  ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/UtkarshV09/DeepStrat-LMS)
 
+[![pylint]()](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/lms.yml)
 
 
 
