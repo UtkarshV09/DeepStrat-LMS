@@ -58,5 +58,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     
     - name: Run Pylint
-      run: |
-        pylint $(git ls-files '*.py') 
+    - uses: Silleellie/pylint-github-action@v1
+      with:
+        package-path: src
+        python-version: 3.11

@@ -1,7 +1,6 @@
 [![codecov](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS/branch/main/graph/badge.svg?token=WMJ5R8AHJT)](https://codecov.io/gh/UtkarshV09/DeepStrat-LMS) ![workflow badge](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/lms.yml/badge.svg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) 
 
-[![Pylint](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/pylint.yml/badge.svg)](https://github.com/UtkarshV09/DeepStrat-LMS/actions/workflows/pylint.yml)
-
+![pylint]()
 
 
 # Django-Python LMS
